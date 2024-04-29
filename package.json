@@ -1,0 +1,29 @@
+{
+  "name": "vuebp",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "axios": "^1.6.8",
+    "bootstrap-icons": "^1.11.2",
+    "boxicons": "^2.1.4",
+    "chart.js": "^4.4.2",
+    "mdb-vue-ui-kit": "^4.1.1",
+    "primeicons": "^7.0.0",
+    "primevue": "^3.51.0",
+    "swup": "^4.5.0",
+    "table": "^6.8.2",
+    "table.js": "^0.1.0",
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.2.3",
+    "vite": "^4.5.3"
+  }
+}
