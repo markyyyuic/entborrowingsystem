@@ -16,7 +16,7 @@
         <div class="item-list">
           <div class="items" v-for="(item, index) in equipments" :key="index">
             <h4>{{ item.item_name }}</h4>
-            <img src="./public/tools/crimping.png" alt="">
+            <img src="../public/tools/crimping.png" alt="">
             <div class="status" >
               <h2 >Quantity: {{ item.quantity }}</h2>
               <h2 :class="getStatusClass(item.status)">Status: {{ item.status }}</h2>
