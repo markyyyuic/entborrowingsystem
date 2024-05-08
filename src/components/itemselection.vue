@@ -6,7 +6,7 @@
         <h3>{{ item.item_name }}</h3>
         <p class="qty">Quantity: {{ item.quantity }}</p>
         <p :class="item.status.toLowerCase() === 'available' ? 'green-text' : 'red-text'">Status: {{ item.status }}</p>
-        <img src="public\tools\crimping.png" alt="">
+        <img src="" alt="">
         <button :class="{ 'available': item.status.toLowerCase() === 'available', 'unavailable': item.status.toLowerCase() !== 'available' }" @click="item.status.toLowerCase() === 'available' ? showQuantityDialog(item) : showUnavailablePrompt()">Select</button>
         <!-- Quantity Dialog -->
         <div class="quantity-dialog" :class="{ 'show': showDialog && selectedTool === item }">
