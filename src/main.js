@@ -1,18 +1,12 @@
-import { createApp } from 'vue'
-// import './style.css'
-import App from './App.vue'
+import { createApp } from 'vue';
+import App from './App.vue';
 import 'mdb-vue-ui-kit/css/mdb.min.css';
-import router from './router'; // Import the router configuration
+import router from './router';
 import PrimeVue from 'primevue/config';
+import store from '../src/components/store'; // Import the Vuex store
 
+import 'primevue/resources/themes/saga-blue/theme.css';
+import 'primevue/resources/primevue.min.css';
+import 'primeicons/primeicons.css';
 
-
-import 'primevue/resources/themes/saga-blue/theme.css'; // Theme
-import 'primevue/resources/primevue.min.css'; // Core CSS
-import 'primeicons/primeicons.css'; // Icons
-
-// createApp(App).mount('#app')
-createApp(App).use(router).use(PrimeVue).mount('#app');
-
-
-
+createApp(App).use(router).use(PrimeVue).use(store).mount('#app');

@@ -4,28 +4,36 @@ import Category from './components/Category.vue';
 import About from './components/About.vue';
 import Login from './components/Login.vue';
 import Panelboard from './components/Panelboard.vue';
-import panelboardequipment from './components/panelboardequipment.vue';
+import itemselection from './components/itemselection.vue';
 import maindashboard from './components/maindashboard.vue';
 import confirmation from './components/confirmation.vue';
 import Itemlist from './components/Itemlist.vue';
 import borrowlist from './components/Borrowerslist.vue';
 import request from './components/requestforuser.vue';
 import sidebar from './components/sidebar.vue';
+import requestforuser from './components/requestforuser.vue';
+import submitprompt from './components/submitprompt.vue';
+
+
 
 
 const routes = [
     { path: '/', component: Home },
     { path: '/category', component: Category },
-    { path: '/about', component: About },
+    { path: '/about', name:'About', component: About },
     { path: '/login', component: Login},
     { path: '/panelboard', component: Panelboard},
-    { path: '/panelboardequipment', component: panelboardequipment},
+    { path: '/itemselection', name: 'itemselection', component: itemselection, props: true },
     { path: '/maindashboards', component: maindashboard},
-    { path: '/confirmation', component: confirmation},
+    { path: '/confirmation',  name: 'confirmation', component: confirmation, props: true},
     { path: '/itemlist', component: Itemlist},
     { path: '/borrowlist', component: borrowlist},
     { path: '/request', component: request},
-    {path: '/sidebar', component: sidebar},
+    { path: '/sidebar', component: sidebar},
+    { path: '/requests', component: requestforuser},
+    { path: '/submitprompt', component: submitprompt}
+  
+
 ];
 
 const router = createRouter({

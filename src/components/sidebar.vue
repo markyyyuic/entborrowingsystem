@@ -12,7 +12,7 @@
 </div>
 
 <div class="menus">
-<i class='bx bx-file'></i><RouterLink to="/request-list">Request List</RouterLink>
+<i class='bx bx-file'></i><RouterLink to="/requests">Request List</RouterLink>
 </div>
 
 <div class="menus">

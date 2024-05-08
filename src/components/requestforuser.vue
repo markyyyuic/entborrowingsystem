@@ -1,170 +1,182 @@
 <template>
-    <Panelboard />
-    <div class="request-header">
-        <h1>Request List</h1>
-    </div>
+   <sidebar />
+   <div class="background">
+ 
+  <div class="request-approval">
+    <h1>Request Approval</h1>
 
-    <div class="request-container">
-        <h2>Requests for Approval</h2>
-        <div class="table">
-        <table>
-            <thead>
-                <tr>
-                    <td>Stud/Per ID</td>
-                    <td>Name</td>
-                    <td>Year</td>
-                    <td>Course & Sec</td>
-                    <td>Univ Role</td>
-                    <td>Equipment</td>
-                    <td>Actions</td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="request in request" :key="request.id"> 
-                    <td>{{ request.id }}</td>
-                    <td>{{ request.name }}</td>
-                    <td>{{ request.year }}</td>
-                    <td>{{ request.coursesection }}</td>
-                    <td>{{ request.role }}</td>
-                    <td>{{ request.equipments }}</td>
-                    <td><button class="button1">Approve</button></td>
-                    <td><button class="button2">Decline</button></td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Item</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="request in requests" :key="request.request_id">
+            <td>{{ request.name }}</td>
+            <td>{{ request.date }}</td>
+            <td>{{ request.item_name }}</td>
+            <td>{{ request.status }}</td>
+            <td>
+              <button class="approve-button" @click="approveRequest(request.request_id)">Approve</button>
+              <button class="decline-button" @click="declineRequest(request.request_id)">Decline</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    </div>
+</div>
+</div>
 
-
-    
 
 </template>
 
-<script setup>
-import Panelboard from './Panelboard.vue';
-import { RouterLink } from 'vue-router';
-
-const request = [
-    {id: 1126, name: "JD Boy Saycon", year: "2nd Year", coursesection: "BSIT-2B", role: "Student", equipments: "HDMI x1, Projector x1" },
-    {id: 1127, name: "Clyde Balaman", year: "--", coursesection: "--", role: "Professor", equipments: "Extension Wire x1, Projector x1" },
-    {id: 1128, name: "Xaian Paul Belderol", year: "2nd Year", coursesection: "BSIT-2B", role: "Student", equipments: "Pen Tablet x1" },
-    {id: 1129, name: "Resti Deniega", year: "2nd Year", coursesection: "BSIT-2B", role: "Student", equipments: "Long Table x1" },
-    {id: 1130, name: "Zeuel Lalaguna", year: "2nd Year", coursesection: "BSIT-2B", role: "Student", equipments: "G.Wire 2x" },
-    {id: 1131, name: "Janilla Conde", year: "2nd Year", coursesection: "BSIT-2B", role: "Student", equipments: "Extension Wire x1, Pen Tablet x1" },
-]
-    
 
 
+<script>
+import sidebar from './sidebar.vue';
+import axios from 'axios';
+
+export default {
+  components: {
+    sidebar
+  },
+  data() {
+    return {
+      requests: [] // Populate this array with requests fetched from the server
+    };
+  },
+  methods: {
+    async fetchRequests() {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/request/requests');
+        console.log('Fetched requests:', response.data); 
+        this.requests = response.data;
+      } catch (error) {
+        console.error('Error fetching requests:', error);
+      }
+    },
+    async approveRequest(request_id) {
+  try {
+  
+    // Send a request to the backend to approve the selected request
+    await axios.post(`http://127.0.0.1:8000/history/history/approve_requests/${request_id}`);
+
+    // Remove the approved request from the UI table
+    this.requests = this.requests.filter(req => req.request_id !== request_id);
+  } catch (error) {
+    console.error('Error approving request:', error);
+  }
+},
+async declineRequest(request_id) {
+  try {
+    // Send a request to the backend to decline the selected request
+    await axios.post(`http://127.0.0.1:8000/history/history/decline_requests/${request_id}`);
+
+    // Remove the declined request from the UI table
+    this.requests = this.requests.filter(req => req.request_id !== request_id);
+  } catch (error) {
+    console.error('Error declining request:', error);
+  }
+}
+  },
+  mounted() {
+    this.fetchRequests(); // Fetch requests when component is mounted
+  }
+};
 </script>
+
+
 
 <style scoped>
 
-.request-header {
-  display: flex;
-  justify-content: left;
-  align-items: center;
-  background: rgba(238, 158, 215, 0.96);
-  border: 1px solid #000;
-  position: absolute;
-  right: 8em;
+.background {
+  position: fixed;
+  background: linear-gradient(#efbfcd, #E81652);
   top: 15%;
-  width: 65em;
-  padding: 10px;
-  height: 3.5em;
+  left: 25%;
+  width: 70%;
+  height: 80%;
+  z-index: -1; /* Ensure the background is behind other content */
+  border-radius: 25px;
 }
 
-.request-header h1 {
-  margin: 0;
-  color: #2C2121;
-  font-family: 'B612' sans-serif;
-  font-size: 19px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  align-items: left;
-  text-align: left;
-  justify-content: left;
-  margin-left: 10px;
-  left: 0;
+
+.request-approval {
   text-align: center;
-  margin-bottom: 7px;
+  position: relative; /* Ensure content stays above the background */
+  z-index: 1; /* Ensure content is above the background */
 }
 
-.request-container {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #000;
-  position: absolute;
-  right: 8em;
-  top: 21.1%;
-  width: 65em;
-  padding: 10px;
-  background: #FFF9F9;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  height: 75%;
-  overflow-y: auto; 
-  overflow-x: hidden;
+.request-approval h1 {
+  font-size: 26px;
+  position: fixed;
+  top: 8%;
+  left: 25%;
 }
 
-.request-container h2 {
-    margin: 10px;
-  top: 10px;
-  font-size: 1em;
-}
+.table-container {
+  position: fixed;
+  margin-left: 2.5%;
+  margin-top: 5%;
+  width: 65%; /* Adjusted width */
+  border: 3px solid #e4007f; /* Fuchsia pink border */
+  border-radius: 10px;
+  /* Enable horizontal scrolling */
+  max-height: 60%; 
+  overflow-x: auto; 
+  z-index: 1;
+  font-family: 'Roboto', sans-serif;
+ 
+ 
 
-
-.table {
-  width: 100vw;
-  display: flex;
-  height: 100vh;
-  background: #FFFDFD;;
+  
 
 }
 
-.table table {
-  width: 66.8%;
-  border: 1px solid black;
+table {
+  width: 100%;
+  border-collapse: collapse;
+
+}
+
+th, td {
+  border: 1px solid #e4007f; /* Fuchsia pink border */
+  padding: 8px;
   text-align: center;
-  justify-content: center;
-  align-items: center;
-  padding: 50px;
+  background-color: white;
+  
 }
 
-.table table thead {
-  height: 15%;
+th {
+  background-color: #f2f2f2;
+  font-weight: bold; /* Bold header text */
 }
 
-.table table tr td {
-  color: black;
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
+button {
+  padding: 5px 10px;
+  margin-right: 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-.table table tr th {
-  color: black;
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
+.approve-button {
+  background-color: #6ACC62; /* Green for approve */
+  color: #fff;
 }
 
-.table tbody tr td button.button1 {
-    border: none;
-    background: #6ACC62;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    position: relative;
-    height: 35px;
+.decline-button {
+  background-color: #ff0000; /* Red for decline */
+  color: #fff;
 }
 
-
-.table tbody tr td button.button2 {
-    border: none;
-    background: #DE5B5B;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    position: relative;
-    height: 35px;
+button:hover {
+  filter: brightness(90%); /* Reduce brightness on hover */
 }
-
 </style>

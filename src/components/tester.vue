@@ -1,48 +1,43 @@
 <template>
-  <transition name="fade">
-    <div v-if="!showItemSelection" class="background"></div>
-  </transition>
-  <transition name="slide">
-    <div class="wrapper" v-if="!showItemSelection">
-      <img src="../assets/logo2.png" class="form-logo" alt="">
-      <form @submit.prevent="next">
-        <div class="input-box">
-          <label for="userid" class="userid">User ID:</label>
-          <input type="text" v-model="formData.user_id" id="userid" name="userid" placeholder="Identification Number" required>
-        </div>  
+  <div class="background"></div>
+  <div class="wrapper">
+    <img src="../assets/logo2.png" class="form-logo" alt="">
+    <form @submit.prevent="next">
+      <div class="input-box">
+        <label for="userid" class="userid">User ID:</label>
+        <input type="text" v-model="formData.id" id="userid" name="userid" placeholder="Identification Number" required>
+      </div>  
 
-        <div class="input-box" style="margin-bottom: 39px">
-          <label for="usernames" class="username">Name:</label>
-          <input type="text" v-model="formData.user_name" id="usernames" placeholder="Enter your Name" required> 
-        </div>
-        
-        <label for="role-dp" class="roles">Role:</label>
-        <div class="input-box">
-          <select id="role-dp" v-model="formData.user_type" required @change="showAdditionalForm">
-            <option value="" disabled selected>Select Role</option>
-            <option value="student">Student</option>
-            <option value="teacher">Teacher</option>
-            <option value="personnel">Personnel</option>
-          </select>
-        </div>
+      <div class="input-box" style="margin-bottom: 39px">
+        <label for="usernames" class="username">Name:</label>
+        <input type="text" v-model="formData.name" id="usernames" placeholder="Enter your Name" required> 
+      </div>
+      
+      <label for="role-dp" class="roles">Role:</label>
+      <div class="input-box">
+        <select id="role-dp" v-model="formData.role" required @change="showAdditionalForm">
+          <option value="" disabled selected>Select Role</option>
+          <option value="student">Student</option>
+          <option value="teacher">Teacher</option>
+          <option value="personnel">Personnel</option>
+        </select>
+      </div>
 
-        <div id="studentForm" style="display: none; top: 25%;">
-          <div class="input-box" style="display: flex; align-items: center;">
-            <input type="text" v-model="formData.year_section" id="yearSection" placeholder="Enter Year and Section" style="flex: 10; width: 100%;" >
-          </div>
+      <div id="studentForm" style="display: none; top: 25%;">
+        <div class="input-box" style="display: flex; align-items: center;">
+          <input type="text" v-model="formData.yearSection" id="yearSection" placeholder="Enter Year and Section" style="flex: 10; width: 100%;" >
         </div>
-        <button type="submit" class="btn">Next</button>
-      </form>
-    </div>
-  </transition>
-  <transition name="slide">
-    <itemselection v-if="showItemSelection" :formData="formData" />
-  </transition>
+      </div>
+      <button type="submit" class="btn">Next</button>
+    </form>
+    <!-- Pass formData to ItemSelection component -->
+    <itemselection class="itemselection" v-if="showItemSelection" :formData="formData" />
+  </div>
 </template>
 
 <script>
-import itemselection from './itemselection.vue'; // Import ItemSelection component
-import store from './store'; // Import Vuex store
+import itemselection from './ItemSelection.vue'; // Import ItemSelection component
+import store from '../store'; // Import Vuex store
 
 export default {
   components: {
@@ -51,10 +46,10 @@ export default {
   data() {
     return {
       formData: {
-        user_id: '',
-        user_name: '',
-        user_type: '',
-        year_section: ''
+        id: '',
+        name: '',
+        role: '',
+        yearSection: ''
       },
       showItemSelection: false
     };
@@ -124,7 +119,7 @@ html, body {
   border-radius: 15px;
   padding: 30px 40px;
   z-index: 1;
-  left: 37%;
+  left: 4%;
 }
 
 .wrapper h1 {
@@ -163,7 +158,7 @@ html, body {
   color: #E81652;
   position: fixed;
   top: 20%;
-  left: 40%;
+  left: 7%;
   font-size: 16;
   font-family: 'Poppins', sans-serif;
   font-weight: 400
@@ -173,7 +168,7 @@ html, body {
   color: #E81652;
   position: fixed;
   top: 31.8%;
-  left: 40%;
+  left: 7%;
   font-size: 16;
   font-family: 'Poppins', sans-serif;
   font-weight: 400;
@@ -183,7 +178,7 @@ html, body {
   color: #E81652;
   position: fixed;
   top: 44%;
-  left: 40%;
+  left: 7%;
   font-size: 16;
   font-family: 'Poppins', sans-serif;
   font-weight: 400;
@@ -205,7 +200,7 @@ html, body {
   color: #ffffff;
   font-weight: 600;
   top: 70%;
-  left: 47%;
+  left: 13.8%;
   font-weight: bold;
 }
 
@@ -238,20 +233,5 @@ html, body {
 .input-box select option {
   background-color: #fff; /* Adjust background color of options */
   color: #333; /* Adjust text color of options */
-}
-
-
-
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.5s ease-in-out;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
-  opacity: 0;
-}
-.slide-enter-active, .slide-leave-active {
-  transition: transform 0.5s ease-in-out;
-}
-.slide-enter, .slide-leave-to /* .slide-leave-active in <2.1.8 */ {
-  transform: translateY(100%);
 }
 </style>
