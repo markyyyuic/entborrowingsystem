@@ -32,7 +32,7 @@
 <script>
 import axios from 'axios';
 import { mapGetters } from 'vuex';
-import SubmitPrompt from './SubmitPrompt.vue'; 
+import SubmitPrompt from './submitPrompt.vue'; 
 export default {
   components: {
     SubmitPrompt
@@ -49,9 +49,10 @@ export default {
       return this.getFormData;
     },
     selectedItems() {
+      const userQuantity = this.formData.quantity;
       return this.getSelectedItems.map(item => ({
         ...item,
-        quantity: 1 // Default quantity, you can modify this as needed
+        quantity: item.quantity // Default quantity, you can modify this as needed
       }));
     },
   },

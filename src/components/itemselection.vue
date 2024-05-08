@@ -70,7 +70,7 @@ export default {
     saveSelectedItem() {
       console.log('Before saving:', this.$store.getters.getSelectedItems);
 
-      const newItem = { item: this.selectedTool, quantity: this.quantity };
+       const newItem = { item: this.selectedTool, quantity: this.quantity };
       this.$store.commit('addItemToSelectedItems', newItem);
       console.log('After saving:', this.$store.getters.getSelectedItems); // Add this line for debugging
 
