@@ -17,6 +17,7 @@ import submitprompt from './components/submitprompt.vue';
 
 
 
+
 const routes = [
     { path: '/', component: Home },
     { path: '/category', component: Category },

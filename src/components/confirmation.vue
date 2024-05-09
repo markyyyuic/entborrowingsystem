@@ -25,17 +25,17 @@
       </div>
     </div>
     <button class="submit" @click="submitData">Submit</button>
-    <SubmitPrompt v-if="showPrompt" :loading="isLoading" />
+    <submitprompt v-if="showPrompt" :loading="isLoading" />
   </div>
 </template>
 
 <script>
 import axios from 'axios';
 import { mapGetters } from 'vuex';
-import SubmitPrompt from './submitPrompt.vue'; 
+import submitprompt from './submitprompt.vue'; 
 export default {
   components: {
-    SubmitPrompt
+    submitprompt
   },
   data() {
     return {
