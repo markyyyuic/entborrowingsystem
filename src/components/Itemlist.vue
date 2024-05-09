@@ -299,11 +299,23 @@
 
         /* STYLE ITEMS */
 
+  .items {
+  background: #EAB2BE;
+  margin-left: 1%;
+  height: 35%;
+  width: 20%;
+  border-radius: 20px;
+  z-index: 1000;
+  margin-bottom: 20px; /* Add margin to the bottom to create space between each item */
+}
+
+
         .item-list {
           position: fixed;
           width: 70%;
-          height: 70%;
+          height: 75%;
           top: 25%;
+          
           left: 25%;
           right: 5%; /* Adjusted to display on the right side */
           display: flex; /* Changed to flex to display items horizontally */
@@ -360,6 +372,8 @@
           height: 50%;
           border-radius: 20px;
         }
+
+    
 
 
 
