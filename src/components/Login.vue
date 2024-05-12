@@ -9,12 +9,12 @@
       
       <div class="username">
         <i class='bx bxs-user-circle'></i>
-        <input v-model="username" type="text" id="username" name="username" placeholder="enter username">
+        <input v-model="username" type="text" id="username" name="username" placeholder="admin">
       </div>
 
       <div class="password">
         <i class='bx bx-lock-alt' ></i>
-        <input v-model="password" type="password" id="password" name="password" placeholder="enter password">
+        <input v-model="password" type="password" id="password" name="password" placeholder="adminpassword">
       </div>
       
       <a href="">Forgot Password?</a>
