@@ -1,54 +1,105 @@
 <template>
     <div class="sub-prompt">
-        <div v-if="loading" class="loading-spinner"></div>
-        <h1 v-else>Request Submitted Successfully</h1>
+      <!-- Show the success message when not loading and not showing the "Please wait..." message -->
+      <div v-if="!loading && !showPleaseWait" class="success-check">
+        <!-- Display checkmark and success message -->
+        <div class="checkmark"></div>
+        <h1>Request Submitted Successfully</h1>
+      </div>
+      
+      <!-- Show the "Please wait..." message when loading or after a brief delay -->
+      <div v-if="loading || showPleaseWait" class="loading-spinner">
+        <p>Please wait...</p>
+      </div>
     </div>
-</template>
-
-<script>
-export default {
+  </template>
+  
+  <script>
+  export default {
+    data() {
+      return {
+        showPleaseWait: false
+      };
+    },
     props: {
-        loading: {
-            type: Boolean,
-            default: false
+      loading: {
+        type: Boolean,
+        default: false
+      }
+    },
+    watch: {
+      loading(newVal) {
+        if (newVal) {
+          // When loading starts, show the "Please wait..." message after a brief delay
+          setTimeout(() => {
+            this.showPleaseWait = true;
+          }, 1000); // Adjust delay as needed
+          
+          // Hide the "Please wait..." message after a short delay
+          setTimeout(() => {
+            this.showPleaseWait = false;
+          }, 3000); // Adjust delay as needed
         }
+      }
     }
-};
-</script>
-
-<style scoped>
-.sub-prompt {
+  };
+  </script>
+  
+  <style scoped>
+  .sub-prompt {
     position: fixed;
-    height: 15%;
-    width: 50%;
-    background: rgb(170, 52, 52);
-    top: 37%;
-    left: 25%;
+    height: 25%;
+    width: 30%;
+    background: rgb(213, 208, 208);
+    top: 35%;
+    left: 35%;
     text-align: center;
     border-radius: 6px;
-}
-
-.sub-prompt h1 {
-    color: white;
-    margin-top: 40px;
-    font-size: 25px;
-    font-family: 'Roboto', sans-serif;
-    font-weight: normal;
-}
-
-.loading-spinner {
+  }
+  
+  .success-check {
     position: relative;
-    border: 4px solid #f3f1f1;
-    border-top: 4px solid #ffffff;
+  }
+  
+  h1 {
+    font-size: 26px;
+    text-align: center;
+    position: relative;
+    top: 145px; /* Adjust as needed */
+  }
+  
+  .checkmark {
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 2s linear infinite;
-    margin-top: 60px;
-}
-
-@keyframes spin {
+    border: 3px solid #ffffff;
+    border-right: 3px solid #14f41b;
+    animation: spin 1s ease infinite;
+    position: absolute;
+    top: 45%;
+    left: calc(50% - 40px);
+  }
+  
+  @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-}
-</style>
+  }
+  
+  .loading-spinner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .loading-spinner p {
+    font-size: 26px; /* Adjust font size as needed */
+    position: relative;
+    top: 145px; /* Same position as h1 */
+  }
+  
+  /* Other styles */
+  </style>
+  

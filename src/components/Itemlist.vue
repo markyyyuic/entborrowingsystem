@@ -49,7 +49,6 @@
   <div class="edit-container" :class="{ 'show': showEditUI}">
     <h6>Edit Equipment</h6>
     <div class="form">
-      <!-- Removed the equipment ID input field -->
       <label for="edit_item_name">Item Name:</label>
       <select name="edit_item_name" id="edit_item_name">
         <option v-for="item in equipments" :value="item.item_name">{{ item.item_name }}</option>
@@ -64,8 +63,8 @@
         <option value="Not Available">Not Available</option>
       </select>
 
-      <!-- Removed the equipment ID input field -->
-      <!-- Adjusted button positions -->
+
+    
       <button class="cancel" @click="closeEdit">Cancel</button>
       <button class="edit" @click="editItem">Edit</button>
     </div>
@@ -136,7 +135,7 @@
         };
         this.equipments.unshift(newItem);
 
-        // Hide the Add UI after successfully adding an item
+        
         this.closeAdd();
       } else {
         console.error('Error adding item:', response.data.message);
@@ -145,47 +144,42 @@
       console.error('Error adding item:', error);
     }
   },
-
   async editItem() {
-    try {
-      // Get the selected item name
-      const itemName = document.getElementById('edit_item_name').value;
-
-      // Find the item in the equipments array and get its index
-      const selectedItemIndex = this.equipments.findIndex(item => item.item_name === itemName);
-      if (selectedItemIndex === -1) {
-        console.error('Selected item not found');
-        return;
-      }
-      const itemId = this.equipments[selectedItemIndex].item_id;
-
-      // Prepare form data
-      const formData = new FormData();
-      formData.append('item_name', itemName);
-      formData.append('quantity', document.getElementById('edit_quantity').value);
-      formData.append('status', document.getElementById('editItemStatus').value);
-
-      // Send update request with the retrieved item ID
-      const response = await axios.put(`http://127.0.0.1:8000/adminpanel/admin/equipment/edit/${itemId}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-
-      if (response.data.message === "Equipment edited successfully by administrator") {
-        // Update the item in the equipments array with the edited data
-        this.equipments[selectedItemIndex].quantity = formData.get('quantity');
-        this.equipments[selectedItemIndex].status = formData.get('status');
-
-        // Close the Edit UI after successfully editing an item
-        this.closeEdit();
-      } else {
-        console.error('Error editing item:', response.data.message);
-      }
-    } catch (error) {
-      console.error('Error editing item:', error);
+  try {
+    const itemName = document.getElementById('edit_item_name').value;
+    const selectedItemIndex = this.equipments.findIndex(item => item.item_name === itemName);
+    
+    if (selectedItemIndex === -1) {
+      console.error('Selected item not found');
+      return;
     }
-  },
+    
+    const itemId = this.equipments[selectedItemIndex].item_id;
+    
+    const formData = new FormData();
+    formData.append('item_name', itemName);
+    formData.append('quantity', document.getElementById('edit_quantity').value);
+    formData.append('status', document.getElementById('editItemStatus').value);
+
+    const response = await axios.put(`http://127.0.0.1:8000/adminpanel/admin/equipment/edit/${itemId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    if (response.data.message === "Equipment updated successfully by administrator") {
+      this.equipments[selectedItemIndex].quantity = formData.get('quantity');
+      this.equipments[selectedItemIndex].status = formData.get('status');
+
+      // Close the Edit UI after successfully editing an item
+      this.closeEdit(); // Call closeEdit method here
+    } else {
+      console.error('Error editing item:', response.data.message);
+    }
+  } catch (error) {
+    console.error('Error editing item:', error);
+  }
+},
       async fetchItemList() {
         try {
           const response = await axios.get('http://127.0.0.1:8000/api/equipments/equipment_list');

@@ -13,6 +13,8 @@ import request from './components/requestforuser.vue';
 import sidebar from './components/sidebar.vue';
 import requestforuser from './components/requestforuser.vue';
 import submitprompt from './components/submitprompt.vue';
+import dialogprompt from './components/logindialog.vue';
+
 
 
 
@@ -32,7 +34,9 @@ const routes = [
     { path: '/request', component: request},
     { path: '/sidebar', component: sidebar},
     { path: '/requests', component: requestforuser},
-    { path: '/submitprompt', component: submitprompt}
+    { path: '/submitprompt', component: submitprompt},
+    { path: '/dialogprompt', component: dialogprompt}
+
   
 
 ];

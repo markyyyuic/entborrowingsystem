@@ -25,7 +25,7 @@
       </div>
     </div>
     <button class="submit" @click="submitData">Submit</button>
-    <submitprompt v-if="showPrompt" :loading="isLoading" />
+    <submitprompt v-if="showPrompt" :loadings="isLoading" />
   </div>
 </template>
 
@@ -33,14 +33,15 @@
 import axios from 'axios';
 import { mapGetters } from 'vuex';
 import submitprompt from './submitprompt.vue'; 
+
 export default {
   components: {
     submitprompt
   },
   data() {
     return {
-      showPrompt: false, // Controls the visibility of the submission prompt
-      isLoading: false // Controls the visibility of the loading spinner in the submission prompt
+      showPrompt: false,
+      isLoading: false
     };
   },
   computed: {
@@ -49,40 +50,68 @@ export default {
       return this.getFormData;
     },
     selectedItems() {
-      const userQuantity = this.formData.quantity;
       return this.getSelectedItems.map(item => ({
         ...item,
-        quantity: item.quantity // Default quantity, you can modify this as needed
+        quantity: item.quantity 
       }));
     },
   },
   methods: {
     async submitData() {
-      try {
-        this.isLoading = true; // Show loading spinner
-        // Your axios request code goes here
-        const url = `http://127.0.0.1:8000/api/equipment/request?user_id=${this.formData.user_id}&item_id=${this.selectedItems[0].item.item_id}&user_type=${this.formData.user_type}&user_name=${this.formData.user_name}&quantity=${this.selectedItems[0].quantity}&year_section=${this.formData.year_section}`;
-        const { data } = await axios.post(url, {});
-        console.log(data);
-        // Show the submission prompt
-        this.showPrompt = true;
-        // Redirect to the home page after 2000 milliseconds
-        setTimeout(() => {
-          this.$router.push('/'); // Replace '/' with your home page route
-        }, 2000);
-      } catch (error) {
-        console.error('Error submitting equipment request:', error);
-      } finally {
-        this.isLoading = false; // Hide loading spinner
-      }
+  try {
+    this.isLoading = true;
+
+    const requestData = {
+  user_id: parseInt(this.formData.user_id),
+  user_name: this.formData.user_name,
+  user_type: this.formData.user_type,
+  year_section: this.formData.year_section || '',
+  item_requests: this.selectedItems.map(item => ({
+    item_id: parseInt(item.item.item_id),
+    quantity: parseInt(item.quantity)
+  }))
+};
+
+    console.log('Request Data:', requestData);
+    // Check if any required field is missing
+    if (!requestData.user_id || !requestData.user_name || !requestData.user_type) {
+      throw new Error('Missing required fields in the request');
+    }
+
+    const response = await axios.post('http://127.0.0.1:8000/api/equipment/request', requestData);
+    console.log('Response:', response); 
+    console.log('Request submitted successfully:', response.data);
+
+    this.showPrompt = true;
+    this.$store.dispatch('resetFormData')
+    this.$store.dispatch('clearSelectedItems')
+    setTimeout(() => {
+      this.$router.push('/');
+    }, 5000);
+  } catch (error) {
+    // Handle error
+    console.error('Error submitting request:', error);
+  } finally {
+    this.isLoading = false;
+  }
+},
+
+    resetFormData() {
+      this.$store.dispatch('resetFormData');
     }
   }
 };
 </script>
 
-
-
 <style scoped>
+
+.submit-prompt {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .confirmation-container {
   position: fixed;
   left: 0;
@@ -109,7 +138,6 @@ export default {
   position: relative;
   border-radius: 16px;
   box-shadow: 1px 1px 6px rgb(93, 92, 92);
-
 }
 
 .confirmation h1 {
@@ -121,7 +149,7 @@ export default {
   position: relative;
 }
 
-.confirmation h2{
+.confirmation h2 {
   color: #FF728F;
   font-family: 'Poppins', sans-serif;
   font-size: 15px;
@@ -130,7 +158,6 @@ export default {
   margin-right: 42%;
   bottom: 22%;
   position: relative;
-  
 }
 
 .confirmation .id-role span {
@@ -139,9 +166,9 @@ export default {
   font-family: 'Poppins', sans-serif;
   font-size: 15px;
   font-weight: bold;
-  margin-right: 100px; /* Add some spacing between h3 and h4 */
+  margin-right: 100px;
+  /* Add some spacing between h3 and h4 */
   margin-left: 10px;
-
 }
 
 .confirmation .id {
@@ -151,8 +178,6 @@ export default {
   font-size: 15px;
   font-weight: bold;
   bottom: 100px;
-  
-
 }
 
 .confirmation .role {
@@ -162,8 +187,6 @@ export default {
   font-weight: bold;
   bottom: 100px;
   position: relative;
-  
-
 }
 
 .item-details {
@@ -172,24 +195,22 @@ export default {
   bottom: 25%;
   position: relative;
   width: 92%;
-  border-top: 2px  solid #CCCCCC;
-  
-
+  border-top: 2px solid #CCCCCC;
 }
 
 table {
   width: 100%;
   max-width: 600px;
-  margin-top: 10px ;
+  margin-top: 10px;
   border-collapse: collapse;
- 
 }
 
-table, th, td {
+table,
+th,
+td {}
 
-}
-
-th, td {
+th,
+td {
   padding: 10px;
 }
 
@@ -200,7 +221,7 @@ th {
 }
 
 td {
- font-weight: bold;
+  font-weight: bold;
 }
 
 button {

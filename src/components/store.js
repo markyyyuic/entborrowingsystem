@@ -4,10 +4,10 @@ const store = createStore({
   state() {
     return {
       formData: {
-        id: '',
-        name: '',
-        role: '',
-        yearSection: ''
+        user_id: '',
+        user_name: '',
+        user_type: '',
+        year_section: ''
       },
       selectedItems: [],
       selectedQuantity: 0
@@ -29,13 +29,27 @@ const store = createStore({
     },
     clearSelectedItems(state) {
       state.selectedItems = [];
+    },
+    resetFormData(state) {
+      state.formData = {
+        user_id: '',
+        user_name: '',
+        user_type: '',
+        year_section: ''
+      };
     }
   },
   actions: {
     updateFormData({ commit }, formData) {
       commit('updateFormData', formData);
     },
-    // Define other actions if needed
+    resetFormData({ commit }) {
+      commit('resetFormData');
+    },
+    // Add action to clear selected items
+    clearSelectedItems({ commit }) {
+      commit('clearSelectedItems');
+    }
   },
   getters: {
     getFormData(state) {

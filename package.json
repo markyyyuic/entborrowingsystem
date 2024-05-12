@@ -16,6 +16,7 @@
     "mdb-vue-ui-kit": "^4.1.1",
     "primeicons": "^7.0.0",
     "primevue": "^3.51.0",
+    "request": "^2.88.2",
     "swup": "^4.5.0",
     "table": "^6.8.2",
     "table.js": "^0.1.0",
