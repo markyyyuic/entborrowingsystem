@@ -198,7 +198,7 @@ html, body {
 @media (min-width: 600px) {
   .wrapper {
     max-width: 500px;
-    top: 50px;
+    top: 25px;
   }
   .form-logo {
     width: 60px;

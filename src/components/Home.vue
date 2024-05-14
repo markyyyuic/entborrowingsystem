@@ -36,13 +36,13 @@ import { RouterLink } from 'vue-router';
 
 <style scoped>
 
+/* Existing styles */
 
 html, body {
   height: 100%;
   width: 100%;
   margin: 0;
   overflow: hidden;
-  
 }
 
 .background-container {
@@ -58,10 +58,7 @@ html, body {
   background-size: cover;
   background-position: center;
   background-size: cover; 
-  
 }
-
-
 
 /* LOGO */
 
@@ -69,7 +66,6 @@ html, body {
   width: 15%;
   margin: 3%;
   position: fixed;
-  
 }
 
 h1 {
@@ -81,9 +77,7 @@ h1 {
   margin-top: 19%;
   margin-left: 3%;
   font-size: 70px;
-  
 }
-
 
 button {
   border: 1px;
@@ -99,23 +93,20 @@ button {
   padding: 0px;
   font-family: 'Roboto', sans-serif;
   font-weight: bold;
-  
 }
 
-
-
-.wrapper{
+.wrapper {
   position: fixed;
   top: 50%;
   left: 85%;
   transform: translate(-50%, -50%);
 }
 
-.link_wrapper{
+.link_wrapper {
   position: relative;
 }
 
-a{
+a {
   display: block;
   width: 250px;
   height: 50px;
@@ -131,7 +122,7 @@ a{
   transition: all .35s;
 }
 
-.icon{
+.icon {
   width: 50px;
   height: 50px;
   border: 3px solid transparent;
@@ -143,7 +134,7 @@ a{
   transition: all .35s;
 }
 
-.icon svg{
+.icon svg {
   width: 30px;
   position: absolute;
   top: calc(50% - 15px);
@@ -153,18 +144,111 @@ a{
   transition: all .35s;
 }
 
-a:hover{
+a:hover {
   width: 200px;
   border: 3px solid #E81652;
   background: transparent;
   color: #E81652;
 }
 
-a:hover + .icon{
+a:hover + .icon {
   border: 3px solid #E81652;
   right: -25%;
 }
 
+/* Responsive styles */
+
+@media screen and (max-width: 1024px) {
+  .logo {
+    width: 20%;
+    margin: 2%;
+  }
+
+  h1 {
+    margin-top: 17%;
+    font-size: 60px;
+  }
+
+  button {
+    font-size: 22px;
+    width: 9%;
+    height: 4.5%;
+    top: 87%;
+  }
+
+  .wrapper {
+    left: 80%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .logo {
+    width: 25%;
+    margin: 2%;
+  }
+
+  h1 {
+    margin-top: 15%;
+    font-size: 50px;
+  }
+
+  button {
+    font-size: 20px;
+    width: 10%;
+    height: 4%;
+    top: 85%;
+  }
+
+  .wrapper {
+    left: 75%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .logo {
+    width: 30%;
+    margin: 1%;
+  }
+
+  h1 {
+    margin-top: 10%;
+    font-size: 40px;
+  }
+
+  button {
+    font-size: 15px;
+    width: 15%;
+    height: 3%;
+    top: 80%;
+  }
+
+  .wrapper {
+    left: 65%;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .logo {
+    width: 40%;
+    margin: 1%;
+  }
+
+  h1 {
+    margin-top: 5%;
+    font-size: 30px;
+  }
+
+  button {
+    font-size: 12px;
+    width: 20%;
+    height: 3%;
+    top: 75%;
+  }
+
+  .wrapper {
+    left: 55%;
+  }
+}
 
 
 </style>
