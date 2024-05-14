@@ -4,20 +4,20 @@
   </transition>
   <transition name="slide">
     <div class="wrapper" v-if="!showItemSelection">
-      <img src="../assets/logo2.png" class="form-logo" alt="">
+      <img src="../assets/loginlogo.png" class="form-logo" alt="">
       <form @submit.prevent="next">
         <div class="input-box">
           <label for="userid" class="userid">User ID:</label>
           <input type="text" v-model="formData.user_id" id="userid" name="userid" placeholder="Identification Number" required>
         </div>  
 
-        <div class="input-box" style="margin-bottom: 39px">
+        <div class="input-box">
           <label for="usernames" class="username">Name:</label>
           <input type="text" v-model="formData.user_name" id="usernames" placeholder="Enter your Name" required> 
         </div>
         
-        <label for="role-dp" class="roles">Role:</label>
         <div class="input-box">
+          <label for="role-dp" class="roles">Role:</label>
           <select id="role-dp" v-model="formData.user_type" required @change="showAdditionalForm">
             <option value="" disabled selected>Select Role</option>
             <option value="student">Student</option>
@@ -26,10 +26,9 @@
           </select>
         </div>
 
-        <div id="studentForm" style="display: none; top: 25%;">
-          <div class="input-box" style="display: flex; align-items: center;">
-            <input type="text" v-model="formData.year_section" id="yearSection" placeholder="Enter Year and Section" style="flex: 10; width: 100%;" >
-          </div>
+        <div id="studentForm" class="input-box" style="display: none;">
+          <label for="yearSection" class="year-section">Year and Section:</label>
+          <input type="text" v-model="formData.year_section" id="yearSection" placeholder="Enter Year and Section">
         </div>
         <button type="submit" class="btn">Next</button>
       </form>
@@ -87,16 +86,7 @@ export default {
 };
 </script>
 
-
 <style scoped>
-
-.itemselection {
-  opacity: 1;
-  transition: opacity 0.5s ease-in-out; /* Smooth transition */
-}
-
-
-
 html, body {
   height: 100%;
   width: 100%;
@@ -116,15 +106,17 @@ html, body {
 .wrapper {
   position: fixed;
   top: 15%;
-  height: 70%;
-  width:  30%;
+  height: auto;
+  width: 90%;
+  max-width: 400px;
   background: rgb(249, 249, 249);
   text-align: center;
   color: #fff;
   border-radius: 15px;
-  padding: 30px 40px;
+  padding: 30px 20px;
   z-index: 1;
-  left: 37%;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .wrapper h1 {
@@ -133,18 +125,28 @@ html, body {
 }
 
 .wrapper .input-box {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   width: 100%;
-  height: 50px;
-  margin: 35px 10px 10px 10px;
+  margin: 20px 0;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
   border-radius: 10px;
-  right: 2%;
+  padding: 10px;
 }
 
-.input-box input {
+.input-box label {
+  color: #E81652;
+  font-size: 16px;
+  font-weight: 400;
+  margin-bottom: 5px;
+  text-align: left;
   width: 100%;
-  height: 100%;
+}
+
+.input-box input, .input-box select {
+  width: 100%;
+  height: 40px;
   background: transparent;
   border: none;
   outline: none;
@@ -152,51 +154,19 @@ html, body {
   border-radius: 10px;
   font-size: 16px;
   color: #010101;
-  padding: 15px;
+  padding: 10px;
+  margin-top: 5px;
 }
 
-.input-box input::placeholder{
+.input-box input::placeholder {
   color: #686565;
 }
 
-.userid {
-  color: #E81652;
-  position: fixed;
-  top: 20%;
-  left: 40%;
-  font-size: 16;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400
-}
-
-.username {
-  color: #E81652;
-  position: fixed;
-  top: 31.8%;
-  left: 40%;
-  font-size: 16;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;
-}
-
-.roles {
-  color: #E81652;
-  position: fixed;
-  top: 44%;
-  left: 40%;
-  font-size: 16;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;
-}
-
 .wrapper .btn {
-  position: fixed;
-  margin-top: 10px;
-  width: 10%;
-  height: 8%;
+  width: 100%;
+  height: 40px;
   background: #FB4570;
-  border: 1px;
-  border-style: solid;
+  border: none;
   outline: none;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, .1);
@@ -204,9 +174,7 @@ html, body {
   font-size: 16px;
   color: #ffffff;
   font-weight: 600;
-  top: 70%;
-  left: 47%;
-  font-weight: bold;
+  margin-top: 20px;
 }
 
 .btn:hover {
@@ -214,25 +182,8 @@ html, body {
 }
 
 .form-logo {
-  position: fixed;
-  width: 40%;
-  bottom: 100%;
-  left: 30%;
-  box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
-  border-radius: 50%;
-}
-
-.input-box select {
-  width: 100%;
-  height: 100%;
-  background: transparent;
-  border: none;
-  outline: none;
-  border: 2px solid rgba(251, 69, 112, 1);
-  border-radius: 10px;
-  font-size: 16px;
-  color: #000000;
-  padding: 15px;
+  width: 80px;
+  margin-bottom: 20px;
 }
 
 .input-box select option {
@@ -240,7 +191,37 @@ html, body {
   color: #333; /* Adjust text color of options */
 }
 
+#studentForm {
+  display: none;
+}
 
+@media (min-width: 600px) {
+  .wrapper {
+    max-width: 500px;
+    top: 20px;
+  }
+  .form-logo {
+    width: 100px;
+  }
+}
+
+@media (min-width: 768px) {
+  .wrapper {
+    max-width: 600px;
+  }
+  .form-logo {
+    width: 120px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .wrapper {
+    max-width: 30%;
+  }
+  .form-logo {
+    width: 150px;
+  }
+}
 
 .fade-enter-active, .fade-leave-active {
   transition: opacity 0.5s ease-in-out;

@@ -1,44 +1,48 @@
 <template>
   <!-- SIDE BAR SECTION -->
   <div class="side-bar">
+    <div class="logo-container">
+      <img src="../assets/loginlogo.png" alt="logo">
+    </div>
 
-<div class="logo-container">
-  <img src="../assets/loginlogo.png" alt="">
-</div>
+    <div class="nav-menus">
+      <div class="menus">
+        <i class='bx bxs-dashboard'></i>
+        <RouterLink to="/maindashboards">Dashboard</RouterLink>
+      </div>
 
-<div class="nav-menus">
-<div class="menus">
-<i class='bx bxs-dashboard'></i><RouterLink to="/maindashboards">Dashboard</RouterLink>
-</div>
+      <div class="menus">
+        <i class='bx bx-file'></i>
+        <RouterLink to="/requests">Request List</RouterLink>
+      </div>
 
-<div class="menus">
-<i class='bx bx-file'></i><RouterLink to="/requests">Request List</RouterLink>
-</div>
-
-<div class="menus">
-<i class='bx bx-cog'></i><RouterLink to="/itemlist">Tool Settings</RouterLink>
-</div>
-</div>
-
-
-</div>
-
-
-<div class="log-out">
-    <RouterLink to="/login">
-    <button >Sign Out</button><i class='bx bx-log-in'></i>
-    </RouterLink>
+      <div class="menus">
+        <i class='bx bx-cog'></i>
+        <RouterLink to="/itemlist">Tool Settings</RouterLink>
+      </div>
+    </div>
   </div>
 
+  <div class="log-out">
+    <button @click="signOut">Sign Out</button><i class='bx bx-log-in'></i>
+  </div>
 </template>
 
 <script>
+export default {
+  methods: {
+    signOut() {
+      sessionStorage.clear();
+      
+      // Redirect to the login page
+      this.$router.push('/login');
+    }
+  }
+}
 </script>
 
-
-
 <style scoped>
-
+/* Your existing styles */
 .side-bar {
   position: fixed;
   background-color: #FFF;
@@ -48,7 +52,6 @@
 }
 
 .logo-container {
-  
   height: 20%;
   margin-top: 15%;
 }
@@ -57,29 +60,24 @@
   position: fixed;
   width: 14%;
   left: 3%;
-  
 }
 
 .nav-menus {
   position: fixed;
   margin-top: 8%;
   width: 20.9%;
-
 }
 
-.menus  {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 5%;
-    height: 80px;
-   
-
+.menus {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5%;
+  height: 80px;
 }
 
 .menus:active,
-.menus:focus
-.menus a:focus {
+.menus:focus {
   border: 2px solid #FF6C8B;
   background-color: #FFCBD5;
   border-right: 5px solid #FF6C88;
@@ -87,31 +85,28 @@
 }
 
 .menus a {
-    text-decoration: none;
-    color: black; /* Adjust the color as needed */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 45%; /* Make sure the anchor takes full width */
-    height: 100%; /* Make sure the anchor takes full height */
-    font-size: 20px;
-    font-weight: 200;
-    font-family: 'Poppins', sans-serif;
+  text-decoration: none;
+  color: black; /* Adjust the color as needed */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 45%; /* Make sure the anchor takes full width */
+  height: 100%; /* Make sure the anchor takes full height */
+  font-size: 20px;
+  font-weight: 200;
+  font-family: 'Poppins', sans-serif;
+}
 
-  }
+.menus i {
+  font-size: 2rem;
+  background: #CCCCCC;
+  height: 33px;
+  width: 33px;
+  border-radius: 7px;
+}
 
-  .menus i {
-    font-size: 2rem;
-    background: #CCCCCC;
-    height: 33px;
-    width: 33px;
-    border-radius: 7px;
-  }
-
-
-  /* Log out */
-
-  .log-out {
+/* Log out */
+.log-out {
   position: fixed;
   margin-top: 20px;
   left: 90%;
@@ -121,16 +116,13 @@
   border: none;
   background: none;
   font-size: 15px;
-  
 }
 
 .log-out i {
- font-size: 18px;
- background: #CCCCCC;
- border-radius: 2px;
- width: 20px;
- color: #33363F;
+  font-size: 18px;
+  background: #CCCCCC;
+  border-radius: 2px;
+  width: 20px;
+  color: #33363F;
 }
-
-
 </style>

@@ -6,7 +6,6 @@
   <div class="login-bar">
     <img src="../assets/loginlogo.png" alt="">
     <form @submit.prevent="attemptLogin">
-      
       <div class="username">
         <i class='bx bxs-user-circle'></i>
         <input v-model="username" type="text" id="username" name="username" placeholder="admin">
@@ -20,10 +19,8 @@
       <a href="">Forgot Password?</a>
       <button class="login" :disabled="loading">Login</button>
 
-      
-
+      <!-- Dialog component for displaying messages -->
       <dialogprompt :show="showDialog" :message="dialogMessage" :loading="loading" />
-
     </form>
   </div>
 </template>
@@ -47,43 +44,51 @@ export default {
   },
   methods: {
     attemptLogin() {
-      this.loading = true; // Show loading spinner
-      const formData = new FormData();
-      formData.append('username', this.username);
-      formData.append('password', this.password);
+  this.loading = true; // Show loading spinner
 
-      axios.post('http://127.0.0.1:8000/adminpanel/administrator/login/', formData)
-        .then(response => {
-          if (response.data) {
-            this.dialogMessage = 'Login successfully please wait';
-            this.showDialog = true;
-            setTimeout(() => {
-              this.$router.push('/maindashboards');
-              this.loading = false; // Hide loading spinner
-            }, 2000); // Redirect after 2 seconds
-          } else {
-            this.dialogMessage = 'Invalid username or password';
-            this.showDialog = true;
-            setTimeout(() => {
-              this.showDialog = false; // Close dialog after 2 seconds
-            }, 2000);
-            this.loading = false; // Hide loading spinner
-          }
-        })
-        .catch(error => {
-          console.error("Error:", error);
-          if (error.response && error.response.status === 401) {
-            this.dialogMessage = 'Invalid username or password';
-          } else {
-            this.dialogMessage = 'An error occurred during login';
-          }
-          this.showDialog = true;
-          setTimeout(() => {
-            this.showDialog = false; // Close dialog after 2 seconds
-          }, 2000);
-          this.loading = false; // Hide loading spinner
-        });
-    }
+  const formData = new FormData();
+  formData.append('username', this.username);
+  formData.append('password', this.password);
+
+  axios.post(
+    'http://127.0.0.1:8000/adminpanel/administrator/login/',
+    formData
+  )
+    .then(response => {
+      if (response.status === 200) {
+        
+        const adminCredentials = response.data;
+        console.log('Admin logged in:', adminCredentials);
+
+        // Store admin_id in session storage
+        sessionStorage.setItem('admin_id', adminCredentials.admin_id);
+        sessionStorage.setItem('username', adminCredentials.username);
+        this.dialogMessage = 'Login successful, redirecting...';
+
+        this.showDialog = true;
+        setTimeout(() => {
+          this.$router.push('/maindashboards');
+          this.loading = false; 
+        }, 2000); 
+      } else {
+       
+      }
+    })
+    .catch(error => {
+      console.error('Login error:', error);
+      if (error.response && error.response.status === 401) {
+        this.dialogMessage = 'Invalid username or password';
+      } else {
+        this.dialogMessage = 'An error occurred during login';
+      }
+      this.showDialog = true;
+      setTimeout(() => {
+        this.showDialog = false; 
+      }, 2000);
+      this.loading = false; 
+    });
+}
+
   }
 };
 </script>

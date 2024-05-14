@@ -38,7 +38,7 @@ const routes = [
     { path: '/dialogprompt', component: dialogprompt}
 
   
-
+ 
 ];
 
 const router = createRouter({

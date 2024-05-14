@@ -70,17 +70,20 @@
     </div>
   </div>
 
-        <!-- Delete UI -->
-        <div class="delete-container" :class="{ 'show': showDeleteUI}">
-          <h6>Delete Equipment</h6>
-          <div class="form">
-            <label for="delete_item_id">Equipment ID:</label>
-            <input type="text" name="delete_item_id" id="delete_item_id">
 
-            <button class="cancel" @click="closeDelete">Cancel</button>
-            <button class="delete" @click="deleteItem">Delete</button>
-          </div>
-        </div>
+      <div class="delete-container" :class="{ 'show': showDeleteUI}">
+      <h6>Delete Equipment</h6>
+      <div class="form">
+        <label for="delete_item_name">Select Item:</label>
+        <select v-model="selectedItemToDelete" id="delete_item_id" class="selection">
+          <option v-for="item in equipments" :value="item.item_id">{{ item.item_name }}</option>
+        </select>
+
+        <button class="cancel" @click="closeDelete">Cancel</button>
+        <button class="delete" @click="deleteItem">Delete</button>
+      </div>
+    </div>
+
       </div>
     </div>
   </template>
@@ -98,7 +101,8 @@
         showAddUI: false,
         showEditUI: false,
         showDeleteUI: false,
-        equipments: []
+        equipments: [],
+        selectedItemToDelete: null
       };
     },
     methods: {
@@ -112,40 +116,44 @@
         this.showAddUI = false;
       },
       async addItem() {
-    try {
-      const formData = new FormData();
-      formData.append('item_name', document.getElementById('item_name').value);
-      formData.append('quantity', document.getElementById('quantity').value);
-      formData.append('status', document.getElementById('itemstatus').value);
-
-      const response = await axios.post('http://127.0.0.1:8000/adminpanel/admin/equipment/create', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-
-      if (response.data.message === "Equipment added successfully by administrator") {
-        this.fetchItemList();
-
-        const newItem = {
-          item_name: formData.get('item_name'),
-          imgSrc: "",
-          quantity: formData.get('quantity'),
-          status: formData.get('status')
-        };
-        this.equipments.unshift(newItem);
-
-        
-        this.closeAdd();
-      } else {
-        console.error('Error adding item:', response.data.message);
-      }
-    } catch (error) {
-      console.error('Error adding item:', error);
-    }
-  },
-  async editItem() {
   try {
+    // Retrieve admin_id and username from session storage
+    const adminId = sessionStorage.getItem('admin_id');
+    const username = sessionStorage.getItem('username');
+
+    // Check if admin_id and username are present in session storage
+    if (!adminId || !username) {
+      console.error('Admin ID or Username not found in session storage');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('item_name', document.getElementById('item_name').value);
+    formData.append('quantity', document.getElementById('quantity').value);
+    formData.append('status', document.getElementById('itemstatus').value);
+
+    // Append admin_id and username to the FormData
+    formData.append('admin_id', adminId);
+    formData.append('username', username);
+
+    const response = await axios.post('http://127.0.0.1:8000/adminpanel/admin/equipment/create', formData, {
+      params: {
+    username: username
+  },
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    
+    // Handle response...
+  } catch (error) {
+    console.error('Error adding item:', error);
+  }
+},
+async editItem() {
+  try {
+
+    
     const itemName = document.getElementById('edit_item_name').value;
     const selectedItemIndex = this.equipments.findIndex(item => item.item_name === itemName);
     
@@ -161,16 +169,24 @@
     formData.append('quantity', document.getElementById('edit_quantity').value);
     formData.append('status', document.getElementById('editItemStatus').value);
 
+  
+    const adminId = sessionStorage.getItem('admin_id');
+    const username = sessionStorage.getItem('username');
     const response = await axios.put(`http://127.0.0.1:8000/adminpanel/admin/equipment/edit/${itemId}`, formData, {
+
       headers: {
         'Content-Type': 'multipart/form-data'
+      },
+      params: {
+        admin_id: adminId,
+        username: username
       }
     });
 
     if (response.data.message === "Equipment updated successfully by administrator") {
       this.equipments[selectedItemIndex].quantity = formData.get('quantity');
       this.equipments[selectedItemIndex].status = formData.get('status');
-
+      this.fetchItemList();
       // Close the Edit UI after successfully editing an item
       this.closeEdit(); // Call closeEdit method here
     } else {
@@ -201,14 +217,25 @@
       closeDelete() {
         this.showDeleteUI = false;
       },
-      async deleteItem() {
+        async deleteItem() {
     try {
       const item_id = document.getElementById('delete_item_id').value;
+      
+      // Retrieve username from session storage
+      const username = sessionStorage.getItem('username');
+      console.log('Username:', username); // Log the username
 
-      const response = await axios.delete(`http://127.0.0.1:8000/adminpanel/admin/equipment/delete/${item_id}`);
+      const response = await axios.delete(`http://127.0.0.1:8000/adminpanel/admin/equipment/delete/${item_id}`, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        params: {
+          username: username // Pass username as data
+        }
+      });
 
       if (response.data.message === "Equipment deleted successfully by administrator") {
-        this.fetchItemList();
+        this.fetchItemList(); // Refresh the item list after deletion
 
         // Hide the Delete UI after successfully deleting an item
         this.closeDelete();
@@ -219,6 +246,7 @@
       console.error('Error deleting item:', error);
     }
   }
+
     },
     created() {
       this.fetchItemList();
@@ -231,6 +259,14 @@
 
 
   <style scoped>
+
+
+.selection{
+  height: 50%;
+  width: 100%;
+  left: 25%;
+  position: relative;
+}
 .green-text {
   color: green;
 }
