@@ -198,10 +198,10 @@ html, body {
 @media (min-width: 600px) {
   .wrapper {
     max-width: 500px;
-    top: 20px;
+    top: 50px;
   }
   .form-logo {
-    width: 100px;
+    width: 60px;
   }
 }
 
@@ -210,7 +210,7 @@ html, body {
     max-width: 600px;
   }
   .form-logo {
-    width: 120px;
+    width: 60px;
   }
 }
 
@@ -219,7 +219,7 @@ html, body {
     max-width: 30%;
   }
   .form-logo {
-    width: 150px;
+    width: 60px;
   }
 }
 
