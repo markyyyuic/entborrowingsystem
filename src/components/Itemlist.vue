@@ -116,44 +116,39 @@
         this.showAddUI = false;
       },
       async addItem() {
-  try {
-    // Retrieve admin_id and username from session storage
-    const adminId = sessionStorage.getItem('admin_id');
-    const username = sessionStorage.getItem('username');
+      try {
+        const adminId = sessionStorage.getItem('admin_id');
+        const username = sessionStorage.getItem('username');
 
-    // Check if admin_id and username are present in session storage
-    if (!adminId || !username) {
-      console.error('Admin ID or Username not found in session storage');
-      return;
-    }
+        if (!adminId || !username) {
+          console.error('Admin ID or Username not found in session storage');
+          return;
+        }
 
-    const formData = new FormData();
-    formData.append('item_name', document.getElementById('item_name').value);
-    formData.append('quantity', document.getElementById('quantity').value);
-    formData.append('status', document.getElementById('itemstatus').value);
+        const formData = new FormData();
+        formData.append('item_name', document.getElementById('item_name').value);
+        formData.append('quantity', document.getElementById('quantity').value);
+        formData.append('status', document.getElementById('itemstatus').value);
 
-    // Append admin_id and username to the FormData
-    formData.append('admin_id', adminId);
-    formData.append('username', username);
+        formData.append('admin_id', adminId);
+        formData.append('username', username);
 
-    const response = await axios.post('http://127.0.0.1:8000/adminpanel/admin/equipment/create', formData, {
-      params: {
-    username: username
-  },
-      headers: {
-        'Content-Type': 'multipart/form-data'
+        const response = await axios.post('http://127.0.0.1:8000/adminpanel/admin/equipment/create', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          },
+          params: {
+            username: username
+          }
+        });
+        
+        // Handle response...
+      } catch (error) {
+        console.error('Error adding item:', error);
       }
-    });
-    
-    // Handle response...
-  } catch (error) {
-    console.error('Error adding item:', error);
-  }
-},
-async editItem() {
+    },
+    async editItem() {
   try {
-
-    
     const itemName = document.getElementById('edit_item_name').value;
     const selectedItemIndex = this.equipments.findIndex(item => item.item_name === itemName);
     
@@ -168,27 +163,25 @@ async editItem() {
     formData.append('item_name', itemName);
     formData.append('quantity', document.getElementById('edit_quantity').value);
     formData.append('status', document.getElementById('editItemStatus').value);
-
-  
-    const adminId = sessionStorage.getItem('admin_id');
+    
     const username = sessionStorage.getItem('username');
-    const response = await axios.put(`http://127.0.0.1:8000/adminpanel/admin/equipment/edit/${itemId}`, formData, {
 
+    const adminId = sessionStorage.getItem('admin_id');
+    const response = await axios.put(`http://127.0.0.1:8000/adminpanel/admin/equipment/edit/${itemId}`, formData, {
       headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-      params: {
-        admin_id: adminId,
-        username: username
-      }
+            'Content-Type': 'multipart/form-data'
+          },
+          params: {
+            admin_id: adminId,
+            username: username
+          }
     });
 
     if (response.data.message === "Equipment updated successfully by administrator") {
       this.equipments[selectedItemIndex].quantity = formData.get('quantity');
       this.equipments[selectedItemIndex].status = formData.get('status');
       this.fetchItemList();
-      // Close the Edit UI after successfully editing an item
-      this.closeEdit(); // Call closeEdit method here
+      this.closeEdit();
     } else {
       console.error('Error editing item:', response.data.message);
     }
@@ -217,35 +210,44 @@ async editItem() {
       closeDelete() {
         this.showDeleteUI = false;
       },
-        async deleteItem() {
-    try {
-      const item_id = document.getElementById('delete_item_id').value;
-      
-      // Retrieve username from session storage
-      const username = sessionStorage.getItem('username');
-      console.log('Username:', username); // Log the username
+      async deleteItem() {
+      try {
+        const itemId = this.selectedItemToDelete;
+        const username = sessionStorage.getItem('username');
 
-      const response = await axios.delete(`http://127.0.0.1:8000/adminpanel/admin/equipment/delete/${item_id}`, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
-        params: {
-          username: username // Pass username as data
+        const response = await axios.delete(`http://127.0.0.1:8000/adminpanel/admin/equipment/delete/${itemId}`, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          },
+          params: {
+            username: username
+          }
+        });
+
+        if (response.data.message === "Equipment deleted successfully by administrator") {
+          this.fetchItemList();
+          this.closeDelete();
+        } else {
+          console.error('Error deleting item:', response.data.message);
         }
-      });
-
-      if (response.data.message === "Equipment deleted successfully by administrator") {
-        this.fetchItemList(); // Refresh the item list after deletion
-
-        // Hide the Delete UI after successfully deleting an item
-        this.closeDelete();
-      } else {
-        console.error('Error deleting item:', response.data.message);
+      } catch (error) {
+        console.error('Error deleting item:', error);
       }
-    } catch (error) {
-      console.error('Error deleting item:', error);
-    }
-  }
+    },
+
+    fetchItemList() {
+      try {
+        axios.get('http://127.0.0.1:8000/api/equipments/equipment_list')
+          .then(response => {
+            this.equipments = response.data;
+          })
+          .catch(error => {
+            console.error('Error fetching item list:', error);
+          });
+      } catch (error) {
+        console.error('Error fetching item list:', error);
+      }
+    },
 
     },
     created() {

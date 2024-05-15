@@ -225,4 +225,104 @@ h1 {
   background: #FFF;
   color: black;
 }
+
+
+
+@media screen and (max-width: 1024px) {
+  .login-bar {
+    width: 40%;
+  }
+
+  h1 {
+    font-size: 60px;
+    bottom: 40%;
+  }
+
+  .username,
+  .password {
+    width: 80%;
+    margin-left: 10%;
+  }
+
+  .login-bar img {
+    left: 20%;
+    margin-bottom: 18%;
+  }
+
+  .login-bar a {
+    margin-top: 5%;
+  }
+
+  .login-bar .login {
+    margin-top: 40px;
+    width: 15%;
+    margin-left: 8%;
+  }
+}
+
+/* For small-sized devices */
+@media screen and (max-width: 768px) {
+  .login-bar {
+    width: 60%;
+  }
+
+  h1 {
+    font-size: 40px;
+    bottom: 50%;
+  }
+
+  .username,
+  .password {
+    width: 85%;
+    margin-left: 7.5%;
+  }
+
+  .login-bar img {
+    left: 15%;
+    margin-bottom: 13%;
+  }
+
+  .login-bar a {
+    margin-top: 6%;
+  }
+
+  .login-bar .login {
+    margin-top: 30px;
+    width: 20%;
+    margin-left: 5%;
+  }
+}
+
+/* For extra small-sized devices */
+@media screen and (max-width: 480px) {
+  .login-bar {
+    width: 80%;
+  }
+
+  h1 {
+    font-size: 30px;
+    bottom: 60%;
+  }
+
+  .username,
+  .password {
+    width: 90%;
+    margin-left: 5%;
+  }
+
+  .login-bar img {
+    left: 10%;
+    margin-bottom: 10%;
+  }
+
+  .login-bar a {
+    margin-top: 8%;
+  }
+
+  .login-bar .login {
+    margin-top: 20px;
+    width: 25%;
+    margin-left: 2.5%;
+  }
+}
 </style>

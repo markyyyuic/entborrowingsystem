@@ -78,6 +78,7 @@ export default {
       console.log('Selected Quantity:', this.quantity);
       // Close the dialog after saving
       this.showDialog = false;
+    
     },
     closeDialog() {
       // Close the dialog without saving

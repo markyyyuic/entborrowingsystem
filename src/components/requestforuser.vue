@@ -65,7 +65,7 @@ export default {
   try {
   
     // Send a request to the backend to approve the selected request
-    await axios.post(`http://127.0.0.1:8000/history/history/approve_requests/${request_id}`);
+    await axios.post(`http://127.0.0.1:8000/request/request/approve_requests/${request_id}`);
 
     // Remove the approved request from the UI table
     this.requests = this.requests.filter(req => req.request_id !== request_id);
@@ -76,7 +76,7 @@ export default {
 async declineRequest(request_id) {
   try {
     // Send a request to the backend to decline the selected request
-    await axios.post(`http://127.0.0.1:8000/history/history/decline_requests/${request_id}`);
+    await axios.post(`http://127.0.0.1:8000/request/request/decline_requests/${request_id}`);
 
     // Remove the declined request from the UI table
     this.requests = this.requests.filter(req => req.request_id !== request_id);
