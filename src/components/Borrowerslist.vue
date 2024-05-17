@@ -44,7 +44,6 @@
 import sidebar from './sidebar.vue';
 import axios from 'axios';
 
-
 export default {
   components: {
     sidebar
@@ -67,48 +66,48 @@ export default {
       }
     },
     async setAction(item, action) {
-  try {
-    console.log('Action:', action);
+      try {
+        console.log('Action:', action);
 
-    const payload = {
-      return_date: null,
-      status: null,
-      remarks: action
-    };
+        const payload = {
+          return_date: null,
+          status: null,
+          remarks: action,
+          quantity_borrowed: item.quantity_borrowed // Include the quantity borrowed in the payload
+        };
 
-    // Set the return_date and status based on the action
-    if (action === 'Returned' || action === 'Partially Returned') {
-      payload.return_date = new Date().toISOString().split('T')[0];
+        // Set the return_date and status based on the action
+        if (action === 'Returned' || action === 'Partially Returned') {
+          payload.return_date = new Date().toISOString().split('T')[0];
+        }
+
+        console.log('Payload:', payload);
+
+        if (action === 'Returned') {
+          payload.status = 'Returned';
+        } else if (action === 'Partially Returned') {
+          payload.status = 'Partially Returned';
+        } else {
+          payload.status = 'Not Returned';
+        }
+
+        console.log('Payload after status update:', payload);
+
+        // Send the update request to the backend
+        const response = await axios.put(`http://127.0.0.1:8000/api/borrowed_items/return/${item.borrow_id}`, payload);
+        
+        console.log('Response:', response);
+
+        // Update the item in the borrowedItems array with the response data
+        const updatedItem = response.data;
+        const index = this.borrowedItems.findIndex(i => i.borrow_id === item.borrow_id);
+        if (index !== -1) {
+          this.borrowedItems.splice(index, 1, updatedItem);
+        }
+      } catch (error) {
+        console.error('Error updating action:', error);
+      }
     }
-
-    console.log('Payload:', payload);
-
-    if (action === 'Returned') {
-      payload.status = 'Returned';
-    } else if (action === 'Partially Returned') {
-      payload.status = 'Partially Returned';
-    } else {
-      payload.status = 'Not Returned';
-    }
-
-    console.log('Payload after status update:', payload);
-
-    // Send the update request to the backend
-    const response = await axios.put(`http://127.0.0.1:8000/api/borrowed_items/return/${item.borrow_id}`, payload);
-    
-    console.log('Response:', response);
-
-    // Update the item in the borrowedItems array with the response data
-    const updatedItem = response.data;
-    const index = this.borrowedItems.findIndex(i => i.borrow_id === item.borrow_id);
-    if (index !== -1) {
-      this.borrowedItems.splice(index, 1, updatedItem);
-    }
-  } catch (error) {
-    console.error('Error updating action:', error);
-  }
-}
-
   }
 };
 </script>
