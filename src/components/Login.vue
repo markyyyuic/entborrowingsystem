@@ -56,22 +56,35 @@ export default {
   )
     .then(response => {
       if (response.status === 200) {
-        
         const adminCredentials = response.data;
         console.log('Admin logged in:', adminCredentials);
 
-        // Store admin_id in session storage
-        sessionStorage.setItem('admin_id', adminCredentials.admin_id);
-        sessionStorage.setItem('username', adminCredentials.username);
-        this.dialogMessage = 'Login successful, redirecting...';
+        // Check if adminCredentials is not undefined
+        if (adminCredentials) {
+          // Store admin data in session storage
+          sessionStorage.setItem('admin_id', adminCredentials.admin_id);
+          sessionStorage.setItem('username', adminCredentials.username);
 
-        this.showDialog = true;
-        setTimeout(() => {
-          this.$router.push('/maindashboards');
-          this.loading = false; 
-        }, 2000); 
+          // Set loggedInAdmin object in Vuex store
+          this.$store.commit('setLoggedInAdmin', adminCredentials);
+
+          this.dialogMessage = 'Login successful, redirecting...';
+          this.showDialog = true;
+
+          setTimeout(() => {
+            this.$router.push('/maindashboards');
+            this.loading = false;
+          }, 2000);
+        } else {
+          this.dialogMessage = 'An error occurred during login';
+          this.showDialog = true;
+          setTimeout(() => {
+            this.showDialog = false;
+          }, 2000);
+          this.loading = false;
+        }
       } else {
-       
+        // Handle other response status codes if needed
       }
     })
     .catch(error => {
@@ -83,9 +96,9 @@ export default {
       }
       this.showDialog = true;
       setTimeout(() => {
-        this.showDialog = false; 
+        this.showDialog = false;
       }, 2000);
-      this.loading = false; 
+      this.loading = false;
     });
 }
 

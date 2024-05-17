@@ -10,7 +10,8 @@ const store = createStore({
         year_section: ''
       },
       selectedItems: [],
-      selectedQuantity: 0
+      selectedQuantity: 0,
+      loggedInAdmin: null // Add loggedInAdmin property to store admin data
     };
   },
   mutations: {
@@ -37,6 +38,10 @@ const store = createStore({
         user_type: '',
         year_section: ''
       };
+    },
+    // Define mutation to set loggedInAdmin
+    setLoggedInAdmin(state, adminData) {
+      state.loggedInAdmin = adminData;
     }
   },
   actions: {
@@ -61,6 +66,10 @@ const store = createStore({
     getSelectedQuantity(state) {
       return state.selectedQuantity;
     },
+    // Add getter for loggedInAdmin
+    getLoggedInAdmin(state) {
+      return state.loggedInAdmin;
+    }
   }  
 });
 

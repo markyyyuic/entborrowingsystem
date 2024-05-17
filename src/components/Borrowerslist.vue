@@ -2,7 +2,7 @@
   <div class="content-container-borrow">
     <sidebar />
     <h1>Dashboard</h1>
-    <h2>Recently Borrowed:</h2>
+    <h2>Equipment Tracker:</h2>
     
     <div class="backdrop4">
       <div class="table-container2">
@@ -29,8 +29,8 @@
               <td>{{ item.return_date }}</td>
               <td>{{ item.remarks }}</td>
               <td>
-                <button class="return-button return-button-green" @click="setAction(item, 'Returned')" :class="{ 'green-bg': item.status === 'Returned' }">Returned</button>
-                <button class="return-button return-button-orange" @click="setAction(item, 'Not Return')" :class="{ 'yelloworange-bg': item.status !== 'Returned' }">Not Return</button>
+                <button class="return-button return-button-green" @click="setAction(item, 'Returned')" :class="{ 'green-bg': item.remarks === 'Returned' }">Returned</button>
+                <button class="return-button return-button-orange" @click="setAction(item, 'Partially Returned')" :class="{ 'yelloworange-bg': item.remarks !== 'Returned' }">Partially Returned</button>
               </td>
             </tr>
           </tbody>
@@ -40,10 +40,10 @@
   </div>
 </template>
 
-
 <script>
 import sidebar from './sidebar.vue';
-import axios from 'axios'; // Import Axios for making HTTP requests
+import axios from 'axios';
+
 
 export default {
   components: {
@@ -55,27 +55,50 @@ export default {
     };
   },
   mounted() {
-    // Call the function to fetch borrowed data when the component is mounted
     this.fetchBorrowedItems();
   },
   methods: {
     async fetchBorrowedItems() {
       try {
         const response = await axios.get('http://127.0.0.1:8000/api/borrowed_list');
-        console.log('Fetched borrowed data:', response.data); // Log the fetched data
         this.borrowedItems = response.data;
-        console.log('Borrowed items state:', this.borrowedItems); // Log the updated state
       } catch (error) {
         console.error('Error fetching borrowed items:', error);
       }
     },
     async setAction(item, action) {
   try {
-    const response = await axios.put(`http://127.0.0.1:8000/borrowed_items/return/${item.borrow_id}`, {
-      return_date: new Date().toISOString() // or the appropriate return date
-    });
+    console.log('Action:', action);
+
+    const payload = {
+      return_date: null,
+      status: null,
+      remarks: action
+    };
+
+    // Set the return_date and status based on the action
+    if (action === 'Returned' || action === 'Partially Returned') {
+      payload.return_date = new Date().toISOString().split('T')[0];
+    }
+
+    console.log('Payload:', payload);
+
+    if (action === 'Returned') {
+      payload.status = 'Returned';
+    } else if (action === 'Partially Returned') {
+      payload.status = 'Partially Returned';
+    } else {
+      payload.status = 'Not Returned';
+    }
+
+    console.log('Payload after status update:', payload);
+
+    // Send the update request to the backend
+    const response = await axios.put(`http://127.0.0.1:8000/api/borrowed_items/return/${item.borrow_id}`, payload);
     
-    // Update the local state to reflect the change
+    console.log('Response:', response);
+
+    // Update the item in the borrowedItems array with the response data
     const updatedItem = response.data;
     const index = this.borrowedItems.findIndex(i => i.borrow_id === item.borrow_id);
     if (index !== -1) {
@@ -85,6 +108,7 @@ export default {
     console.error('Error updating action:', error);
   }
 }
+
   }
 };
 </script>

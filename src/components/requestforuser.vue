@@ -62,28 +62,42 @@ export default {
       }
     },
     async approveRequest(request_id) {
-  try {
-  
-    // Send a request to the backend to approve the selected request
-    await axios.post(`http://127.0.0.1:8000/request/request/approve_requests/${request_id}`);
+      try {
+        // Extract admin ID from the logged-in admin data
+        const admin_id = this.$store.state.loggedInAdmin.admin_id;
 
-    // Remove the approved request from the UI table
-    this.requests = this.requests.filter(req => req.request_id !== request_id);
-  } catch (error) {
-    console.error('Error approving request:', error);
-  }
-},
-async declineRequest(request_id) {
-  try {
-    // Send a request to the backend to decline the selected request
-    await axios.post(`http://127.0.0.1:8000/request/request/decline_requests/${request_id}`);
+        // Send a request to the backend to approve the selected request
+        // Include admin_id as a query parameter in the URL
+        await axios.post(`http://127.0.0.1:8000/request/request/approve_requests/${request_id}?admin_id=${admin_id}`);
 
-    // Remove the declined request from the UI table
-    this.requests = this.requests.filter(req => req.request_id !== request_id);
+        // Remove the approved request from the UI table
+        this.requests = this.requests.filter(req => req.request_id !== request_id);
+      } catch (error) {
+        console.error('Error approving request:', error);
+      }
+    },
+    async declineRequest(request_id) {
+  try {
+    // Check if loggedInAdmin exists in the store and has the admin_id property
+    if (this.$store.state.loggedInAdmin && this.$store.state.loggedInAdmin.admin_id) {
+      // Extract admin ID from the logged-in admin data
+      const admin_id = this.$store.state.loggedInAdmin.admin_id;
+
+      // Send a request to the backend to decline the selected request
+      // Include admin_id as a query parameter in the URL
+      await axios.post(`http://127.0.0.1:8000/request/requests/decline_requests/${request_id}?admin_id=${admin_id}`);
+
+      // Remove the declined request from the UI table
+      this.requests = this.requests.filter(req => req.request_id !== request_id);
+    } else {
+      // Handle case where loggedInAdmin or admin_id is null
+      console.error('Error: loggedInAdmin or admin_id is null');
+    }
   } catch (error) {
     console.error('Error declining request:', error);
   }
 }
+
   },
   mounted() {
     this.fetchRequests(); // Fetch requests when component is mounted

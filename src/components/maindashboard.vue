@@ -18,12 +18,12 @@
         <tbody>
           
         
-          <tr v-for="(item, index) in borrowedItems" :key="index">
-            <td>{{ item[0] }}</td>
-            <td>{{ item[1] }}</td>
-            <td>{{ item[2] }}</td>
-            <td>{{ item[3] }}</td>
-          </tr>
+            <tr v-for="(item, index) in borrowedItems" :key="index">
+              <td>{{ item.history_id }}</td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.date }}</td>
+              <td>{{ item.item_name }}</td>
+            </tr>
         </tbody>
       </table>
     </div>
@@ -52,7 +52,7 @@ export default {
   methods: {
           async fetchHistoryData() {
         try {
-          const response = await axios.get('http://127.0.0.1:8000/history/history_data');
+          const response = await axios.get('http://127.0.0.1:8000/history/history');
           console.log('Fetched history data:', response.data); // Log the fetched data
           this.borrowedItems = response.data;
         } catch (error) {

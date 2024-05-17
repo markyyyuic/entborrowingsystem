@@ -24,6 +24,7 @@
     "table.js": "^0.1.0",
     "vue": "^3.3.4",
     "vue-router": "^4.2.5",
+    "vue3-toast-notification": "^0.0.3",
     "vuex": "^4.1.0"
   },
   "devDependencies": {
