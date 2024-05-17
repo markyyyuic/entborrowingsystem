@@ -142,7 +142,8 @@
           }
         });
         
-        // Handle response...
+        this.fetchItemList();
+        this.closeAdd();
       } catch (error) {
         console.error('Error adding item:', error);
       }
