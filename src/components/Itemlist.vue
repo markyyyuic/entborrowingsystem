@@ -1,5 +1,6 @@
   <template>
     <div>
+        <PrimeVueToast ref="toast" />
       <sidebar />
       <h1>Manage Tools</h1>
 
@@ -91,10 +92,13 @@
   <script>
   import sidebar from './sidebar.vue';
   import axios from 'axios';
+  import PrimeVueToast from 'primevue/toast';
+
 
   export default {
     components: {
-      sidebar
+      sidebar,
+      PrimeVueToast
     },
     data() {
       return {
@@ -141,11 +145,27 @@
             username: username
           }
         });
-        
+
+        const itemName = formData.get('item_name');
+        const quantity = formData.get('quantity');
+
+        this.$refs.toast.add({
+          severity: 'success',
+          summary: 'Successfully Added',
+          detail: `New Item Added: ${itemName} : ${quantity}`, // Updated toast message
+          life: 3000
+        });
         this.fetchItemList();
         this.closeAdd();
       } catch (error) {
         console.error('Error adding item:', error);
+      this.$refs.toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'Error Adding Item.', // Warning message
+      life: 3000
+    });
+    this.closeAdd();
       }
     },
     async editItem() {
@@ -181,13 +201,36 @@
     if (response.data.message === "Equipment updated successfully by administrator") {
       this.equipments[selectedItemIndex].quantity = formData.get('quantity');
       this.equipments[selectedItemIndex].status = formData.get('status');
+
+
+      const updatedItem = this.equipments[selectedItemIndex];
+      this.$refs.toast.add({
+          severity: 'success',
+          summary: 'Successfully Updated',
+          detail: `Updated Item ${updatedItem.item_name}: ${updatedItem.quantity} : ${updatedItem.status}`, // Updated toast message
+          life: 3000
+      });
+  
+
       this.fetchItemList();
       this.closeEdit();
     } else {
       console.error('Error editing item:', response.data.message);
+      this.$refs.toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: `Error updating item`, // Updated toast message
+          life: 3000
+      });
     }
   } catch (error) {
     console.error('Error editing item:', error);
+    this.$refs.toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: `Error updating item`, // Updated toast message
+          life: 3000
+      });
   }
 },
       async fetchItemList() {
@@ -226,6 +269,13 @@
         });
 
         if (response.data.message === "Equipment deleted successfully by administrator") {
+
+          this.$refs.toast.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: `Item deleted`, // Updated toast message
+          life: 3000
+      });
           this.fetchItemList();
           this.closeDelete();
         } else {

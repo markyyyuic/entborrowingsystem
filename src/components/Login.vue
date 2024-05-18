@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     attemptLogin() {
-  this.loading = true; // Show loading spinner
+  this.loading = true; 
 
   const formData = new FormData();
   formData.append('username', this.username);

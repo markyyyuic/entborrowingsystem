@@ -1,4 +1,5 @@
 <template>
+  <PrimeVueToast ref="toast" />
   <div class="content-container-borrow">
     <sidebar />
     <h1>Dashboard</h1>
@@ -43,10 +44,12 @@
 <script>
 import sidebar from './sidebar.vue';
 import axios from 'axios';
+import PrimeVueToast from 'primevue/toast';
 
 export default {
   components: {
-    sidebar
+    sidebar,
+    PrimeVueToast
   },
   data() {
     return {
@@ -95,7 +98,12 @@ export default {
 
         // Send the update request to the backend
         const response = await axios.put(`http://127.0.0.1:8000/api/borrowed_items/return/${item.borrow_id}`, payload);
-        
+        this.$refs.toast.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: `Item has been successfully returned!`, // Updated toast message
+          life: 3000
+      });
         console.log('Response:', response);
 
         // Update the item in the borrowedItems array with the response data

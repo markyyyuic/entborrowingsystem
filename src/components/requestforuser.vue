@@ -1,5 +1,6 @@
 <template>
    <sidebar />
+   <PrimeVueToast ref="toast" />
    <div class="background">
  
   <div class="request-approval">
@@ -41,10 +42,12 @@
 <script>
 import sidebar from './sidebar.vue';
 import axios from 'axios';
+import PrimeVueToast from 'primevue/toast';
 
 export default {
   components: {
-    sidebar
+    sidebar,
+    PrimeVueToast
   },
   data() {
     return {
@@ -69,7 +72,12 @@ export default {
         // Send a request to the backend to approve the selected request
         // Include admin_id as a query parameter in the URL
         await axios.post(`http://127.0.0.1:8000/request/request/approve_requests/${request_id}?admin_id=${admin_id}`);
-
+        this.$refs.toast.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: `Request has been approved`, // Updated toast message
+          life: 3000
+      });
         // Remove the approved request from the UI table
         this.requests = this.requests.filter(req => req.request_id !== request_id);
       } catch (error) {
@@ -86,7 +94,12 @@ export default {
       // Send a request to the backend to decline the selected request
       // Include admin_id as a query parameter in the URL
       await axios.post(`http://127.0.0.1:8000/request/requests/decline_requests/${request_id}?admin_id=${admin_id}`);
-
+      this.$refs.toast.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: `Request has been declined`, // Updated toast message
+          life: 3000
+      });
       // Remove the declined request from the UI table
       this.requests = this.requests.filter(req => req.request_id !== request_id);
     } else {
