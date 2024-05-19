@@ -4,6 +4,7 @@
   <h1>Equipment and<br>Tools <br>Borrowing <br>System</h1>
 
   <div class="login-bar">
+    <h2>Please Login</h2>
     <img src="../assets/loginlogo.png" alt="">
     <form @submit.prevent="attemptLogin">
       <div class="username">
@@ -16,7 +17,6 @@
         <input v-model="password" type="password" id="password" name="password" placeholder="password">
       </div>
       
-      <a href="">Forgot Password?</a>
       <button class="login" :disabled="loading">Login</button>
 
       <!-- Dialog component for displaying messages -->
@@ -232,11 +232,20 @@ h1 {
   color: #ffffff;
   font-weight: 600;
   margin-left: 13%;
+  left: 68%;
 }
 
 .login:hover {
   background: #FFF;
   color: black;
+}
+
+.login-bar h2{
+  position: fixed;
+  font-size: 23px;
+  top: 45%;
+  left: 82%;
+  color: #555;
 }
 
 
