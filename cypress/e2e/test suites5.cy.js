@@ -7,5 +7,8 @@ describe('Login functionality', () => {
       cy.get('#username').should('be.visible').type('danny');
       cy.get('#password').should('be.visible').type('admin123');
       cy.get('.login').should('be.visible').click();
+      cy.get('a[data-v-e6ac6a55][href="/requests"]').click();
+      cy.get('button[data-v-53b8abd0].approve-button').first().click();
+      cy.get('button[data-v-53b8abd0].decline-button').first().click(); 
     });
 });

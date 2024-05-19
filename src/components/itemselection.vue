@@ -1,12 +1,14 @@
 <template>
+
   <div class="item-selections">
+    <PrimeVueToast ref="toast" />
     <h1>SELECT AN ITEM</h1>
     <div class="item-list">
       <div class="item" v-for="item in items" :key="item.item_id">
         <h3>{{ item.item_name }}</h3>
         <p class="qty">Quantity: {{ item.quantity }}</p>
         <p :class="item.status.toLowerCase() === 'available' ? 'green-text' : 'red-text'">Status: {{ item.status }}</p>
-        <img src="" alt="">
+        <img :src="getImageUrl(item)" alt="Item Image">
         <button :class="{ 'available': item.status.toLowerCase() === 'available', 'unavailable': item.status.toLowerCase() !== 'available' }" @click="item.status.toLowerCase() === 'available' ? showQuantityDialog(item) : showUnavailablePrompt()">Select</button>
         <!-- Quantity Dialog -->
         <div class="quantity-dialog" :class="{ 'show': showDialog && selectedTool === item }">
@@ -36,12 +38,17 @@
 </template>
 
 <script>
+import PrimeVueToast from 'primevue/toast';
 import Confirmation from './confirmation.vue';
 import axios from 'axios';
 
 export default {
   components: { 
     Confirmation,
+    PrimeVueToast
+  },
+  props: {
+    formData: Object // Define formData as a prop
   },
   data() {
     return {
@@ -67,18 +74,38 @@ export default {
       this.selectedTool = tool;
       this.showDialog = true;
     },
-    saveSelectedItem() {
-      console.log('Before saving:', this.$store.getters.getSelectedItems);
+    async saveSelectedItem() {
+      if (this.quantity > this.selectedTool.quantity) {
+        // Show error message if quantity exceeds available quantity
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Sorry, were unable to process your request for that quantity',
+          life: 3000
+        });
+        return;
+      }
 
-       const newItem = { item: this.selectedTool, quantity: this.quantity };
+      // Add the selected item to the list of selected items
+      const newItem = { item: this.selectedTool, quantity: this.quantity };
       this.$store.commit('addItemToSelectedItems', newItem);
-      console.log('After saving:', this.$store.getters.getSelectedItems); // Add this line for debugging
 
-      console.log('Selected Item:', this.selectedTool);
-      console.log('Selected Quantity:', this.quantity);
+      // Show success message
+      this.$toast.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Item successfully added.',
+        life: 3000
+      });
+
       // Close the dialog after saving
       this.showDialog = false;
-    
+
+      // For debugging
+      console.log('Before saving:', this.$store.getters.getSelectedItems);
+      console.log('After saving:', this.$store.getters.getSelectedItems);
+      console.log('Selected Item:', this.selectedTool);
+      console.log('Selected Quantity:', this.quantity);
     },
     closeDialog() {
       // Close the dialog without saving
@@ -100,7 +127,22 @@ export default {
     showConfirmation() {
       // Set showConfirmation to true to display the Confirmation component
       this.isConfirmationVisible = true;
-    }
+    },
+    getImageUrl(item) {
+  // Determine the MIME type based on the image format
+  let mimeType = '';
+  if (item.image_format === 'jpeg' || item.image_format === 'jpg') {
+    mimeType = 'image/jpeg';
+  } else if (item.image_format === 'png') {
+    mimeType = 'image/png';
+  } else {
+    // Handle other image formats if needed
+  }
+
+  // Convert binary image data to Base64-encoded data URI
+  return `data:${mimeType};base64,${item.image}`;
+}
+
   },
   mounted() {
     this.fetchItemList(); // Fetch item list when the component is mounted
@@ -281,6 +323,7 @@ export default {
   left: 25%;
   position: relative;
   background-color: grey;
+  border-radius: 6px;
 }
 
 .item h3 {

@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from './components/Home.vue';
-import Category from './components/Category.vue';
 import About from './components/About.vue';
 import Login from './components/Login.vue';
 import Panelboard from './components/Panelboard.vue';
@@ -14,6 +13,9 @@ import sidebar from './components/sidebar.vue';
 import requestforuser from './components/requestforuser.vue';
 import submitprompt from './components/submitprompt.vue';
 import dialogprompt from './components/logindialog.vue';
+import Category from './components/Category.vue';
+import RequestTracker from './components/RequestTracker.vue';
+
 
 
 
@@ -35,7 +37,8 @@ const routes = [
     { path: '/sidebar', component: sidebar},
     { path: '/requests', component: requestforuser},
     { path: '/submitprompt', component: submitprompt},
-    { path: '/dialogprompt', component: dialogprompt}
+    { path: '/trackingrequest', component: RequestTracker}
+
 
   
  

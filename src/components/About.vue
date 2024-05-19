@@ -34,6 +34,8 @@
       </form>
     </div>
   </transition>
+
+  
   <transition name="slide">
     <itemselection v-if="showItemSelection" :formData="formData" />
   </transition>
@@ -182,7 +184,7 @@ html, body {
 }
 
 .form-logo {
-  width: 80px;
+  width: 26px;
   margin-bottom: 20px;
 }
 
@@ -198,10 +200,10 @@ html, body {
 @media (min-width: 600px) {
   .wrapper {
     max-width: 500px;
-    top: 25px;
+    top: 60px;
   }
   .form-logo {
-    width: 60px;
+    width: 90px;
   }
 }
 
@@ -210,7 +212,7 @@ html, body {
     max-width: 600px;
   }
   .form-logo {
-    width: 60px;
+    width: 90px;
   }
 }
 
@@ -219,7 +221,7 @@ html, body {
     max-width: 30%;
   }
   .form-logo {
-    width: 60px;
+    width: 90px;
   }
 }
 
@@ -235,4 +237,7 @@ html, body {
 .slide-enter, .slide-leave-to /* .slide-leave-active in <2.1.8 */ {
   transform: translateY(100%);
 }
+
+
+
 </style>

@@ -1,6 +1,7 @@
 <template>
   <div class="confirmation-container">
-    <div class="confirmation">
+    <!-- Show confirmation section if showPrompt is false -->
+    <div v-if="!showPrompt" class="confirmation">
       <h1>Confirmation</h1>
       <h2>Name: {{ formData.user_name }}</h2>
       <div class="id-role">
@@ -23,11 +24,18 @@
           </tbody>
         </table>
       </div>
+      <!-- Display tracking ID if available -->
+      <div v-if="trackingId" class="tracking-id">
+        <span>Tracking ID: {{ trackingId }}</span>
+      </div class="button-container">
+      <!-- Show submit button -->
+      <button class="submit" @click="submitData">Submit</button>
     </div>
-    <button class="submit" @click="submitData">Submit</button>
-    <submitprompt v-if="showPrompt" :loadings="isLoading" />
+    <!-- Show submit prompt if showPrompt is true -->
+    <submitprompt v-else :loading="isLoading" :trackingId="trackingId" />
   </div>
 </template>
+
 
 <script>
 import axios from 'axios';
@@ -41,7 +49,9 @@ export default {
   data() {
     return {
       showPrompt: false,
-      isLoading: false
+      isLoading: false,
+      showConfirmation: true ,
+      trackingId: '' 
     };
   },
   computed: {
@@ -62,15 +72,15 @@ export default {
     this.isLoading = true;
 
     const requestData = {
-  user_id: parseInt(this.formData.user_id),
-  user_name: this.formData.user_name,
-  user_type: this.formData.user_type,
-  year_section: this.formData.year_section || '',
-  item_requests: this.selectedItems.map(item => ({
-    item_id: parseInt(item.item.item_id),
-    quantity: parseInt(item.quantity)
-  }))
-};
+      user_id: parseInt(this.formData.user_id),
+      user_name: this.formData.user_name,
+      user_type: this.formData.user_type,
+      year_section: this.formData.year_section || '',
+      item_requests: this.selectedItems.map(item => ({
+        item_id: parseInt(item.item.item_id),
+        quantity: parseInt(item.quantity)
+      }))
+    };
 
     console.log('Request Data:', requestData);
     // Check if any required field is missing
@@ -82,12 +92,13 @@ export default {
     console.log('Response:', response); 
     console.log('Request submitted successfully:', response.data);
 
+    // Assuming the response contains the tracking ID
+    const trackingId = response.data.tracking_id;
+
     this.showPrompt = true;
-    this.$store.dispatch('resetFormData')
-    this.$store.dispatch('clearSelectedItems')
-    setTimeout(() => {
-      this.$router.push('/');
-    }, 5000);
+    this.trackingId = trackingId; // Set the tracking ID
+    this.$store.dispatch('resetFormData');
+    this.$store.dispatch('clearSelectedItems');
   } catch (error) {
     // Handle error
     console.error('Error submitting request:', error);
@@ -145,14 +156,14 @@ export default {
   font-size: 25px;
   font-weight: bold;
   font-family: 'Poppin', sans-serif;
-  bottom: 20%;
+  bottom: 18%;
   position: relative;
 }
 
 .confirmation h2 {
   color: #FF728F;
   font-family: 'Poppins', sans-serif;
-  font-size: 15px;
+  font-size: 17px;
   font-weight: bold;
   display: inline;
   margin-right: 42%;
@@ -164,7 +175,7 @@ export default {
   display: inline;
   color: #FF728F;
   font-family: 'Poppins', sans-serif;
-  font-size: 15px;
+  font-size: 17px;
   font-weight: bold;
   margin-right: 100px;
   /* Add some spacing between h3 and h4 */
@@ -224,16 +235,23 @@ td {
   font-weight: bold;
 }
 
-button {
+.submit {
   position: relative;
   top: 10%;
   color: #FFF;
   background: #FB4570;
   font-family: 'Poppin', sans-serif;
-  height: 6%;
+  height: 10%;
   border: none;
   border-radius: 6px;
-  width: 8%;
+  width: 25%;
   box-shadow: 1px 1px 6px rgb(93, 92, 92);
 }
+
+/* Adjusting styles for Name, ID, and Role */
+.confirmation h2,
+.confirmation .id-role span {
+  visibility: visible; /* Ensure they are visible */
+}
+
 </style>

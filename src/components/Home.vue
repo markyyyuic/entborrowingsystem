@@ -5,7 +5,7 @@
   <img src="../assets/logo2.png" class="logo" alt="">
 </div>
 
-<h1>Open Laboratory <br>Borrowing System</h1>
+<h1>Equipment and Tools <br>Borrowing System</h1>
 
 <RouterLink to="/login">
 <button>ADMIN</button>

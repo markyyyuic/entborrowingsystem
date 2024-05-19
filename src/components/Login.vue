@@ -1,19 +1,19 @@
 <template>
   <div class="background-login"></div>
 
-  <h1>Open <br>Laboratory <br>Borrowing <br>System</h1>
+  <h1>Equipment and<br>Tools <br>Borrowing <br>System</h1>
 
   <div class="login-bar">
     <img src="../assets/loginlogo.png" alt="">
     <form @submit.prevent="attemptLogin">
       <div class="username">
         <i class='bx bxs-user-circle'></i>
-        <input v-model="username" type="text" id="username" name="username" placeholder="admin">
+        <input v-model="username" type="text" id="username" name="username" placeholder="username">
       </div>
 
       <div class="password">
         <i class='bx bx-lock-alt' ></i>
-        <input v-model="password" type="password" id="password" name="password" placeholder="adminpassword">
+        <input v-model="password" type="password" id="password" name="password" placeholder="password">
       </div>
       
       <a href="">Forgot Password?</a>

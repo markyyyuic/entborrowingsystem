@@ -19,7 +19,7 @@
     "jwt-decode": "^4.0.0",
     "mdb-vue-ui-kit": "^4.1.1",
     "primeicons": "^7.0.0",
-    "primevue": "^3.7.1",
+    "primevue": "^3.52.0",
     "request": "^2.88.2",
     "swup": "^4.5.0",
     "table": "^6.8.2",

@@ -1,5 +1,6 @@
   <template>
     <div>
+  
         <PrimeVueToast ref="toast" />
       <sidebar />
       <h1>Manage Tools</h1>
@@ -16,6 +17,7 @@
         <!-- Container for Items -->
         <div class="item-list">
           <div class="items" v-for="(item, index) in equipments" :key="index">
+            <img :src="'data:image/jpeg;base64,' + item.image" alt="Equipment Image" />
             <h4>{{ item.item_name }}</h4>
            
             <div class="status" >
@@ -41,6 +43,9 @@
               <option value="Not Available">Not Available</option>
             </select>
 
+            <label for="image">Add Image:</label>
+            <input type="file" id="image" name="image" accept="image/*">
+
             <button class="cancel" @click="closeAdd">Cancel</button>
             <button class="add" @click="addItem">Add</button>
           </div>
@@ -50,26 +55,28 @@
   <div class="edit-container" :class="{ 'show': showEditUI}">
     <h6>Edit Equipment</h6>
     <div class="form">
-      <label for="edit_item_name">Item Name:</label>
-      <select name="edit_item_name" id="edit_item_name">
-        <option v-for="item in equipments" :value="item.item_name">{{ item.item_name }}</option>
-      </select>
+        <label for="edit_item_name">Item Name:</label>
+        <select name="edit_item_name" id="edit_item_name">
+            <option v-for="item in equipments" :value="item.item_name">{{ item.item_name }}</option>
+        </select>
 
-      <label for="edit_quantity">Quantity:</label>
-      <input type="text" name="edit_quantity" id="edit_quantity">
+        <label for="edit_quantity">Quantity:</label>
+        <input type="text" name="edit_quantity" id="edit_quantity">
 
-      <label for="editItemStatus">Status:</label>
-      <select name="editItemStatus" id="editItemStatus">
-        <option value="Available">Available</option>
-        <option value="Not Available">Not Available</option>
-      </select>
+        <label for="editItemStatus">Status:</label>
+        <select name="editItemStatus" id="editItemStatus">
+            <option value="Available">Available</option>
+            <option value="Not Available">Not Available</option>
+        </select>
 
+        <label for="edit_image">Update Image:</label>
+        <input type="file" id="edit_image" name="edit_image" accept="image/*">
 
-    
-      <button class="cancel" @click="closeEdit">Cancel</button>
-      <button class="edit" @click="editItem">Edit</button>
+        <button class="cancel" @click="closeEdit">Cancel</button>
+        <button class="edit" @click="editItem">Edit</button>
     </div>
-  </div>
+</div>
+
 
 
       <div class="delete-container" :class="{ 'show': showDeleteUI}">
@@ -93,12 +100,13 @@
   import sidebar from './sidebar.vue';
   import axios from 'axios';
   import PrimeVueToast from 'primevue/toast';
-
+  import ConfirmDialog from 'primevue/confirmdialog';
 
   export default {
     components: {
       sidebar,
-      PrimeVueToast
+      PrimeVueToast,
+    
     },
     data() {
       return {
@@ -120,55 +128,87 @@
         this.showAddUI = false;
       },
       async addItem() {
-      try {
+    try {
         const adminId = sessionStorage.getItem('admin_id');
         const username = sessionStorage.getItem('username');
 
         if (!adminId || !username) {
-          console.error('Admin ID or Username not found in session storage');
-          return;
+            console.error('Admin ID or Username not found in session storage');
+            this.$toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Admin ID or Username not found.',
+                life: 3000
+            });
+            return;
+        }
+
+        const itemName = document.getElementById('item_name').value;
+        const quantity = document.getElementById('quantity').value;
+        const status = document.getElementById('itemstatus').value;
+        const image = document.getElementById('image').files[0]; // Get the first selected file
+
+        if (!itemName || !quantity || !status || !image) {
+            console.error('Missing form fields');
+            this.$toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Please fill in all required fields.',
+                life: 3000
+            });
+            return;
         }
 
         const formData = new FormData();
-        formData.append('item_name', document.getElementById('item_name').value);
-        formData.append('quantity', document.getElementById('quantity').value);
-        formData.append('status', document.getElementById('itemstatus').value);
-
+        formData.append('item_name', itemName);
+        formData.append('quantity', quantity);
+        formData.append('status', status);
         formData.append('admin_id', adminId);
         formData.append('username', username);
+        formData.append('image', image); // Append the image file to the form data
 
         const response = await axios.post('http://127.0.0.1:8000/adminpanel/admin/equipment/create', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          },
-          params: {
-            username: username
-          }
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+            params: {
+                username: username
+            }
         });
 
-        const itemName = formData.get('item_name');
-        const quantity = formData.get('quantity');
-
-        this.$refs.toast.add({
-          severity: 'success',
-          summary: 'Successfully Added',
-          detail: `New Item Added: ${itemName} : ${quantity}`, // Updated toast message
-          life: 3000
-        });
-        this.fetchItemList();
-        this.closeAdd();
-      } catch (error) {
+        if (response.data.message === "Item Already Exist") {
+            this.$toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'This item already exists.',
+                life: 3000
+            });
+        } else {
+            this.$toast.add({
+                severity: 'success',
+                summary: 'Successfully Added',
+                detail: `New Item Added: ${itemName} : ${quantity}`,
+                life: 3000
+            });
+            this.fetchItemList();
+            this.closeAdd();
+        }
+    } catch (error) {
         console.error('Error adding item:', error);
-      this.$refs.toast.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: 'Error Adding Item.', // Warning message
-      life: 3000
-    });
-    this.closeAdd();
-      }
-    },
-    async editItem() {
+        // Log the full error response for debugging
+        if (error.response) {
+            console.error('Error response:', error.response.data);
+        }
+        this.$toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.response?.data?.detail || 'Error Adding Item.',
+            life: 3000
+        });
+        this.closeAdd();
+    }
+},
+async editItem() {
   try {
     const itemName = document.getElementById('edit_item_name').value;
     const selectedItemIndex = this.equipments.findIndex(item => item.item_name === itemName);
@@ -184,53 +224,55 @@
     formData.append('item_name', itemName);
     formData.append('quantity', document.getElementById('edit_quantity').value);
     formData.append('status', document.getElementById('editItemStatus').value);
+    const imageInput = document.getElementById('edit_image');
+    if (imageInput.files.length > 0) {
+      formData.append('image', imageInput.files[0]);
+    }
     
     const username = sessionStorage.getItem('username');
-
     const adminId = sessionStorage.getItem('admin_id');
+    
     const response = await axios.put(`http://127.0.0.1:8000/adminpanel/admin/equipment/edit/${itemId}`, formData, {
       headers: {
-            'Content-Type': 'multipart/form-data'
-          },
-          params: {
-            admin_id: adminId,
-            username: username
-          }
+        'Content-Type': 'multipart/form-data'
+      },
+      params: {
+        admin_id: adminId,
+        username: username
+      }
     });
 
     if (response.data.message === "Equipment updated successfully by administrator") {
-      this.equipments[selectedItemIndex].quantity = formData.get('quantity');
-      this.equipments[selectedItemIndex].status = formData.get('status');
-
-
       const updatedItem = this.equipments[selectedItemIndex];
+      updatedItem.quantity = formData.get('quantity');
+      updatedItem.status = formData.get('status');
+
       this.$refs.toast.add({
-          severity: 'success',
-          summary: 'Successfully Updated',
-          detail: `Updated Item ${updatedItem.item_name}: ${updatedItem.quantity} : ${updatedItem.status}`, // Updated toast message
-          life: 3000
+        severity: 'success',
+        summary: 'Successfully Updated',
+        detail: `Updated Item ${updatedItem.item_name}: ${updatedItem.quantity} : ${updatedItem.status}`,
+        life: 3000
       });
   
-
       this.fetchItemList();
       this.closeEdit();
     } else {
       console.error('Error editing item:', response.data.message);
       this.$refs.toast.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: `Error updating item`, // Updated toast message
-          life: 3000
+        severity: 'error',
+        summary: 'Error',
+        detail: `Error updating item`,
+        life: 3000
       });
     }
   } catch (error) {
     console.error('Error editing item:', error);
     this.$refs.toast.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: `Error updating item`, // Updated toast message
-          life: 3000
-      });
+      severity: 'error',
+      summary: 'Error',
+      detail: `Error updating item`,
+      life: 3000
+    });
   }
 },
       async fetchItemList() {
@@ -267,6 +309,7 @@
             username: username
           }
         });
+        
 
         if (response.data.message === "Equipment deleted successfully by administrator") {
 
@@ -339,6 +382,8 @@
           
 
         }
+
+        
 
 
      
@@ -418,7 +463,7 @@
         }
 
         .items h4 {
-          top: 3%;
+          top: 20%;
           position: relative;
           color: #0c0c0c;
           text-align: center;
@@ -439,6 +484,7 @@
         }
 
         .items h2 {
+          margin-top: 45px;
           font-size: 15px ;
           margin-left: 2%;
           margin-right: 8%;
@@ -448,12 +494,13 @@
         }
 
         .items img {
-          top: 2%;
+          top: 5%;
           position: relative;
           width: 50%;
           left: 25%;
           height: 50%;
           border-radius: 20px;
+          background-color: rgb(193, 158, 158);
         }
 
     
@@ -568,7 +615,7 @@
   .edit-container {
       position: relative;
       width: 30%;
-      height: 60%;
+      height: 49.5%;
       background-image: linear-gradient(#F6A6BD, #E81652);
       left: 35%;
       display: grid;
@@ -584,7 +631,7 @@
   .edit-container h6 {
       position: relative;
       font-size: 22px;
-      margin-top: 6%;
+      margin-top: 2%;
       text-align: center;
       color: white;
   }
@@ -595,8 +642,8 @@
       grid-template-columns: 1fr 1fr; /* Split the container into two columns */
       gap: 10px;
       margin-top: 4%;
-      right: 25%;
-      top: -40%;
+      right: 22%;
+      top: -25%;
   }
 
   .edit-container .form label {
@@ -651,14 +698,14 @@
   .delete-container {
       position: relative;
       width: 30%;
-      height: 60%;
+      height: 50%;
       background-image: linear-gradient(#F6A6BD, #E81652);
       left: 67%;
       display: grid;
       border-radius: 10px;
       opacity: 0; /* Initially hide the Delete UI */
       transition: opacity 0.5s ease; /* Set a higher z-index value */
-      top: -108%;
+      top: -100%;
       opacity: 0;
       pointer-events: none;
       z-index: -1;

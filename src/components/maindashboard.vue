@@ -5,36 +5,24 @@
     <h2>Recently Borrowed:</h2>
     
     <div class="backdrop">
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>NAME</th>
-            <th>DATE</th>
-            <th>ITEMS</th>
-          </tr>
-        </thead>
-        <tbody>
-          
-        
-            <tr v-for="(item, index) in borrowedItems" :key="index">
-              <td>{{ item.history_id }}</td>
-              <td>{{ item.name }}</td>
-              <td>{{ item.date }}</td>
-              <td>{{ item.item_name }}</td>
-            </tr>
-        </tbody>
-      </table>
+      
+      <a href="/request" class="indicator pending-request-indicator">
+        <div class="text">Pending Request</div>
+        <div class="count">{{ pendingRequestCount }}</div>
+      </a>
+      <a href="/borrowlist" class="indicator active-borrowed-indicator">
+        <div class="text">Active Borrowed</div>
+        <div class="count">{{ activeBorrowedCount }}</div>
+      </a>
     </div>
-  </div>
   </div>
 </template>
 
+
+
 <script>
 import sidebar from './sidebar.vue';
-import axios from 'axios'; // Import Axios for making HTTP requests
-
+import axios from 'axios';
 
 export default {
   components: {
@@ -42,34 +30,52 @@ export default {
   },
   data() {
     return {
+      requestTable: [],
       borrowedItems: []
     };
   },
-  mounted() {
-    // Call the function to fetch history data when the component is mounted
-    this.fetchHistoryData();
+  computed: {
+    pendingRequestCount() {
+      return this.requestTable.filter(request => request.status === 'pending').length;
+    },
+    activeBorrowedCount() {
+      // Count items where return_date is null (active borrowed)
+      return this.borrowedItems.filter(item => item.return_date === null).length;
+    }
+  },
+  created() {
+    this.fetchRequestData();
+    this.fetchBorrowedData();
+    setInterval(this.fetchRequestData, 5000);
+    setInterval(this.fetchBorrowedData, 5000);
   },
   methods: {
-          async fetchHistoryData() {
-        try {
-          const response = await axios.get('http://127.0.0.1:8000/history/history');
-          console.log('Fetched history data:', response.data); // Log the fetched data
+    fetchRequestData() {
+      axios.get('http://127.0.0.1:8000/request/requests')
+        .then(response => {
+          this.requestTable = response.data;
+        })
+        .catch(error => {
+          console.error('Error fetching request data:', error);
+        });
+    },
+    fetchBorrowedData() {
+      axios.get('http://127.0.0.1:8000/api/borrowed_list')
+        .then(response => {
           this.borrowedItems = response.data;
-        } catch (error) {
-          console.error('Error fetching history data:', error);
-        }
-      }
-
+        })
+        .catch(error => {
+          console.error('Error fetching borrowed items data:', error);
+        });
+    }
   }
-};
+}
 </script>
 
 
 <style scoped>
-
 .backdrop {
- 
-  background-color: #FF728F; /* Pink background color with opacity */
+  background-color: #FF728F; 
   width: 70%;
   height: 70%;
   position: fixed;
@@ -79,51 +85,47 @@ export default {
   border-radius: 6px;
 }
 
-.table-container {
-  width: 60%;
-  left: 30%;
+h1 {
   position: fixed;
-  top: 25%;
-  max-height: 55vh;
-  overflow-y: auto; 
-  
-  
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: white;
-  
-}
-
-th, td {
-  border: 2px solid #070707;
-  text-align: center;
-  padding: 8px;
-}
-
-th {
-  background-color: white;
-  position: sticky; /* Make the header sticky */
-  top: 0; /* Stick the header to the top */
-  z-index: 1; /* Ensure the header stays above the content */
-}
-
-h1{
-  position: fixed;
-  font-size: 30px;
+  font-size: 25px;
   left: 25%;
-  top: 8%;
+  top: 11%;
 }
 
-h2{
+.indicator {
   position: fixed;
-  font-size: 20px;
-  left: 30%;
-  top: 20%;
-  font-family: 'Poppins', sans-serif;
-  z-index: 1;
+  background-color: white;
+  border: 2px solid black;
+  border-radius: 15px;
+  padding: 20px;
+  width: 200px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.pending-request-indicator {
+  top: 23%;
+  left: 28%;
+  text-decoration: none;
   color: black;
+}
+
+.active-borrowed-indicator {
+  top: 23%;
+  left: 45%;
+  text-decoration: none;
+  color: black;
+}
+
+.text {
+  font-size: 20px;
+}
+
+.count {
+  font-size: 36px;
+  font-weight: bold;
 }
 </style>
